@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="pp2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pp2"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3"/>
+        <CursorPos X="9" Y="30"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="18" HistoryIndex="17">
+      <Position1>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="15" Column="10" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="14" Column="26" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="6" Column="11" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="13" Column="29" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="16" Column="3" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="6" Column="12" TopLine="1"/>
+      </Position6>
+      <Position7>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="17" Column="23" TopLine="1"/>
+      </Position7>
+      <Position8>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="11" Column="17" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="22" Column="10" TopLine="1"/>
+      </Position9>
+      <Position10>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="9" Column="4" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="20" Column="14" TopLine="1"/>
+      </Position11>
+      <Position12>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="19" Column="29" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="18" Column="3" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="20" Column="48" TopLine="1"/>
+      </Position14>
+      <Position15>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="12" Column="11" TopLine="1"/>
+      </Position15>
+      <Position16>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="30" Column="20" TopLine="1"/>
+      </Position16>
+      <Position17>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="21" Column="12" TopLine="3"/>
+      </Position17>
+      <Position18>
+        <Filename Value="pp2.pas"/>
+        <Caret Line="27" Column="1" TopLine="3"/>
+      </Position18>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>
