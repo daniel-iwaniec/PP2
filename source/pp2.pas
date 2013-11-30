@@ -2,38 +2,41 @@ program pp2;
 
 {$mode objfpc}{$H+}
 
-uses Classes, CRT, GRAPH;
+uses classes, sysutils, crt, graph;
 
-Var
-  ster, tryb:smallint;
-  ch:char;
-  x, y : integer;
+var
+card:smallint = 0;
+mode:smallint = 0;
 
+x:integer = 320;
+y:integer = 240;
+
+playerSize:smallint = 5;
+playerSpeed:smallint = 5;
+
+button:char;
 
 begin
-  ster := VGA;
-  tryb := VGAHi;
+     initGraph(card, mode, '');
+     setFillStyle(solidFill, brown);
 
-  x := 320;
-  y := 240;
+     repeat
+           if (keyPressed) then begin
+              button := readKey;
+              case button of
+                   #75: x := x - playerSpeed;
+                   #72: y := y - playerSpeed;
+                   #77: x := x + playerSpeed;
+                   #80: y := y + playerSpeed;
+              end;
+           end;
+           clearDevice;
 
-  InitGraph(ster, tryb, '');
-  Rectangle(x-5,y-5,x,y);
+           bar(x - playerSize, y - playerSize, x, y);
 
-  Repeat
-   ch := ReadKey;
-   case ch of
-     #75 : x := x-5;
-     'H' : y := y-5;
-     #77 : x := x+5;
-     'P' : y := y+5;
-   end;
+           {Place to generate enemies and interact with them}
+     until (button = #27);
 
-   ClearDevice;
-   Rectangle(x-5,y-5,x,y);
-
-   Until ch = #27;
-
-   CloseGraph;
+     closeGraph;
 end.
 
