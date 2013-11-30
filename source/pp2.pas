@@ -9,7 +9,7 @@ card:smallint = 0;
 mode:smallint = 0;
 
 x:integer = 320;
-y:integer = 240;
+y:integer = 242;
 
 playerSize:smallint = 5;
 playerSpeed:smallint = 5;
