@@ -2,10 +2,7 @@ program pp2;
 
 {$mode objfpc}{$H+}
 
-uses
-  Classes,
-  CRT,
-  GRAPH;
+uses Classes, CRT, GRAPH;
 
 Var
   ster, tryb:smallint;
