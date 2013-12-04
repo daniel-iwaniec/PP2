@@ -1,22 +1,27 @@
 program pp2;
 
 {$mode objfpc}{$H+}
+{$UNITPATH ./units}
 
-uses classes, sysutils, crt, graph;
+uses classes, sysUtils, crt, graph, pp2Unit;
 
 var
-card:smallint = 0;
-mode:smallint = 0;
+card : smallint = 0;
+mode : smallint = 0;
 
-x:integer = 320;
-y:integer = 242;
+x : integer = 320;
+y  :integer = 242;
 
-playerSize:smallint = 5;
-playerSpeed:smallint = 5;
+playerSize : smallint = 5;
+playerSpeed  :smallint = 5;
 
-button:char;
+button : char;
+
+Player : PlayerPointer;
 
 begin
+     Player := new (PlayerPointer);
+
      initGraph(card, mode, '');
      setFillStyle(solidFill, brown);
 
