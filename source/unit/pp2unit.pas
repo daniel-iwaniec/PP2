@@ -14,7 +14,8 @@ interface
                            next : PlayerPointer;
                            previous : PlayerPointer;
                     public
-                          procedure setSpeed(s : integer);
+                          procedure setID(ID : integer);
+                          procedure getID(ID : integer);
              end;
 
 implementation
