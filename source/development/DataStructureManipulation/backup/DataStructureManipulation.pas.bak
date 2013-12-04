@@ -2,7 +2,7 @@ program DataStructureManipulation;
 
 {$mode objfpc}{$H+}
 
-uses Classes, crt;
+uses Classes;
 
 type
     Wsk =^Element;
@@ -34,13 +34,13 @@ if (EnemyListMeta.head = NIL) then begin
     EnemyListMeta.head := Q;
 end;
 
-EnemyListMeta.count := EnemyListMeta.count + 1;
+EnemyListMeta.count = EnemyListMeta.count++;
 end;
 
 begin
-EnemyListMeta.head := NIl;
-EnemyListMeta.tail := NIL;
-EnemyListMeta.count := 0;
+EnemyListMeta.head = NIl;
+EnemyListMeta.tail = NIL;
+EnemyListMeta.count = 0;
 
 New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
@@ -51,4 +51,9 @@ writeln(EnemyListMeta.head^.data); {5}
 
 ReadKey;
 end.
+
+
+
+
+
 
