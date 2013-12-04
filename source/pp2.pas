@@ -21,6 +21,7 @@ Player : PlayerPointer;
 
 begin
      Player := new (PlayerPointer);
+     Player^.ID := 5;
 
      initGraph(card, mode, '');
      setFillStyle(solidFill, brown);
