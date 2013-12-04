@@ -6,10 +6,11 @@
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="My Application"/>
+      <Title Value="DataStructureManipulation"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>

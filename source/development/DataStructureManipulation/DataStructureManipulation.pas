@@ -3,15 +3,12 @@ program DataStructureManipulation;
 {$mode objfpc}{$H+}
 
 uses
-
-
-
-
-var
-
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  cthreads,
+  {$ENDIF}{$ENDIF}
+  Classes
+  { you can add units after this };
 
 begin
-
-
 end.
 
