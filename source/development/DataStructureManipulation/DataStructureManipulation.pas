@@ -26,7 +26,7 @@ begin
 New(Q);
 Q^.data:= 6;
 Q^.next := NIL;
-Q^.previous := EnemyListMeta.tail
+Q^.previous := EnemyListMeta.tail;
 EnemyListMeta.tail := Q;
 
 if (EnemyListMeta.head = NIL) then begin
