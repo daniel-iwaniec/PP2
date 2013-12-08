@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="DataStructureRetrieving.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="DataStructureRetrieving"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="26"/>
+        <CursorPos X="47" Y="48"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="..\..\pp2.pas"/>
+        <UnitName Value="pp2"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\..\unit\pp2unit.pas"/>
+        <UnitName Value="pp2Unit"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="16"/>
+        <CursorPos X="15" Y="44"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\DataStructureManipulation\DataStructureManipulation.pas"/>
+        <UnitName Value="DataStructureManipulation"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="8"/>
+        <CursorPos X="39" Y="38"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit3>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="DataStructureRetrieving.lpr"/>
+        <Caret Line="14" Column="12" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="DataStructureRetrieving.lpr"/>
+        <Caret Line="75" Column="24" TopLine="32"/>
+      </Position2>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>
