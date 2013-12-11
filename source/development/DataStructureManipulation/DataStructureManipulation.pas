@@ -24,7 +24,7 @@ procedure New_worm(var EnemyListMeta : ListMeta);
 var Q:Wsk;
 begin
 New(Q);
-Q^.data:= 6;
+Q^.data:= 5;
 Q^.next := NIL;
 Q^.previous := EnemyListMeta.tail;
 EnemyListMeta.tail := Q;
@@ -39,11 +39,9 @@ end;
 procedure remove_worm(var EnemyListMeta : ListMeta);
 var Q:Wsk;
 begin
+EnemyListMeta.count := EnemyListMeta.count - 1;
+if EnemyListMeta.count > 0  then begin
 
-if (EnemyListMeta.count >0)  then
-begin
-
-EnemyListMeta.count := EnemyListMeta.count -1;
 if Q^.previous <> nil then Q^.previous^.next := Q^.next
 else EnemyListMeta.head := Q^.next;
 if Q^.next <> nil then Q^.next^.previous := Q^.previous
@@ -60,13 +58,13 @@ EnemyListMeta.count := 0;
 New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
-
-writeln(EnemyListMeta.count); {3}
+New_worm(EnemyListMeta);
+writeln(EnemyListMeta.count); {4}
 writeln(EnemyListMeta.head^.data); {5}
 
 remove_worm(EnemyListMeta);
-
-writeln(EnemyListMeta.count); {2}
+  New_worm(EnemyListMeta);
+writeln(EnemyListMeta.count); {3}
 writeln(EnemyListMeta.head^.data); {5}
 
 ReadKey;
