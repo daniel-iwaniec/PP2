@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Compiler Value="C:\lazarus\fpc\2.6.0\bin\i386-win32\fpc.exe" Date="1098814504"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -FuC:\PP2_\source\development\DataStructureRetrieving\ -FUC:\PP2_\source\development\DataStructureRetrieving\lib\i386-win32\ -l -oproject1.exe DataStructureManipulation.pas"/>
-</CONFIG>
