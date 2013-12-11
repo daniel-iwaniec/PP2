@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Compiler Value="C:\lazarus\fpc\2.6.2\bin\x86_64-win64\fpc.exe" Date="1131443479"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -FiC:\projekt\trunk\source\development\DataStructureRetrieving\lib\x86_64-win64 -FuC:\projekt\trunk\source\development\DataStructureRetrieving\ -FUC:\projekt\trunk\source\development\DataStructureRetrieving\lib\x86_64-win64\ -l DataStructureRetrieving.lpr"/>
-</CONFIG>

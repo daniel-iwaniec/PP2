@@ -10,7 +10,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="DataStructureRetrieving"/>
+      <Title Value="DataStructureManipulation"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -35,9 +35,9 @@
     </RunParams>
     <Units Count="1">
       <Unit0>
-        <Filename Value="DataStructureRetrieving.lpr"/>
+        <Filename Value="DataStructureManipulation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="DataStructureRetrieving"/>
+        <UnitName Value="DataStructureManipulation"/>
       </Unit0>
     </Units>
   </ProjectOptions>
@@ -45,10 +45,9 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="DataStructureRetrieving"/>
+      <Filename Value="project1"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
@@ -59,7 +58,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -69,6 +68,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="Unknown"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>
