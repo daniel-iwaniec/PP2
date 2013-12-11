@@ -41,7 +41,7 @@ var Q:Wsk;
 begin
 EnemyListMeta.count := EnemyListMeta.count - 1;
 if EnemyListMeta.count > 0  then begin
-
+ Q:=  EnemyListMeta.tail;
 if Q^.previous <> nil then Q^.previous^.next := Q^.next
 else EnemyListMeta.head := Q^.next;
 if Q^.next <> nil then Q^.next^.previous := Q^.previous
@@ -63,7 +63,7 @@ writeln(EnemyListMeta.count); {4}
 writeln(EnemyListMeta.head^.data); {5}
 
 remove_worm(EnemyListMeta);
-  New_worm(EnemyListMeta);
+
 writeln(EnemyListMeta.count); {3}
 writeln(EnemyListMeta.head^.data); {5}
 
