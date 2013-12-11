@@ -36,18 +36,21 @@ end;
 EnemyListMeta.count := EnemyListMeta.count + 1;
 end;
 
-procedure remove_worm(var EnemyListMeta : ListMeta);
+procedure remove_worm(var EnemyListMeta : ListMeta; wormID : integer = 0);
 var Q:Wsk;
 begin
-EnemyListMeta.count := EnemyListMeta.count - 1;
-if EnemyListMeta.count > 0  then begin
- Q:=  EnemyListMeta.tail;
-if Q^.previous <> nil then Q^.previous^.next := Q^.next
-else EnemyListMeta.head := Q^.next;
-if Q^.next <> nil then Q^.next^.previous := Q^.previous
-else EnemyListMeta.tail := Q^.previous;
-dispose(Q);
-end;
+    if EnemyListMeta.count > 0  then begin
+        EnemyListMeta.count := EnemyListMeta.count - 1;
+        Q := EnemyListMeta.tail;
+
+        if Q^.previous <> nil then Q^.previous^.next := Q^.next
+        else EnemyListMeta.head := Q^.next;
+
+        if Q^.next <> nil then Q^.next^.previous := Q^.previous
+        else EnemyListMeta.tail := Q^.previous;
+
+        dispose(Q);
+    end;
 end;
 
 begin
@@ -69,6 +72,7 @@ writeln(EnemyListMeta.head^.data); {5}
 
 ReadKey;
 end.
+
 
 
 

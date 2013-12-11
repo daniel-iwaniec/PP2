@@ -12,8 +12,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="33"/>
-        <CursorPos X="26" Y="44"/>
+        <TopLine Value="57"/>
+        <CursorPos X="13" Y="76"/>
         <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -21,7 +21,7 @@
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="25" HistoryIndex="24">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="DataStructureManipulation.pas"/>
         <Caret Line="29" Column="35" TopLine="20"/>
@@ -122,6 +122,26 @@
         <Filename Value="DataStructureManipulation.pas"/>
         <Caret Line="66" Column="29" TopLine="38"/>
       </Position25>
+      <Position26>
+        <Filename Value="DataStructureManipulation.pas"/>
+        <Caret Line="74" Column="5" TopLine="38"/>
+      </Position26>
+      <Position27>
+        <Filename Value="DataStructureManipulation.pas"/>
+        <Caret Line="47" Column="9" TopLine="37"/>
+      </Position27>
+      <Position28>
+        <Filename Value="DataStructureManipulation.pas"/>
+        <Caret Line="46" Column="71" TopLine="37"/>
+      </Position28>
+      <Position29>
+        <Filename Value="DataStructureManipulation.pas"/>
+        <Caret Line="47" Column="10" TopLine="37"/>
+      </Position29>
+      <Position30>
+        <Filename Value="DataStructureManipulation.pas"/>
+        <Caret Line="75" Column="1" TopLine="39"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
