@@ -20,14 +20,32 @@ type
 
 var EnemyListMeta : ListMeta;
 
+function Get_worm(var EnemyListMeta : ListMeta; EnemyID:integer):Wsk;
+var Q:Wsk;
+begin
+     Q := NIL;
+     repeat
+          if (Q = NIL) then Q := EnemyListMeta.head else Q := Q^.next;
+          if (Q = NIL) then break;
+     until (Q^.data = EnemyID);
+
+     Get_worm := Q;
+end;
+
 procedure New_worm(var EnemyListMeta : ListMeta);
 var Q:Wsk;
 begin
 New(Q);
 Q^.data:= 5;
+
 Q^.next := NIL;
 Q^.previous := EnemyListMeta.tail;
-EnemyListMeta.tail := Q;
+
+if (EnemyListMeta.tail <> NIL) then begin
+    EnemyListMeta.tail^.next := Q;
+end;
+
+   EnemyListMeta.tail := Q;
 
 if (EnemyListMeta.head = NIL) then begin
     EnemyListMeta.head := Q;
@@ -41,15 +59,29 @@ var Q:Wsk;
 begin
     if EnemyListMeta.count > 0  then begin
         EnemyListMeta.count := EnemyListMeta.count - 1;
-        Q := EnemyListMeta.tail;
 
-        if Q^.previous <> nil then Q^.previous^.next := Q^.next
-        else EnemyListMeta.head := Q^.next;
+        if (wormID = 0) then begin
+            Q := EnemyListMeta.tail;
 
-        if Q^.next <> nil then Q^.next^.previous := Q^.previous
-        else EnemyListMeta.tail := Q^.previous;
+            if Q^.previous <> nil then Q^.previous^.next := Q^.next
+            else EnemyListMeta.head := Q^.next;
 
-        dispose(Q);
+            if Q^.next <> nil then Q^.next^.previous := Q^.previous
+            else EnemyListMeta.tail := Q^.previous;
+        end else begin
+            Q := Get_worm(EnemyListMeta, wormID);
+            if (Q <> NIL) then begin
+                if (Q^.previous <> NIL) then begin
+                    Q^.previous^.next := Q^.next;
+                end;
+
+                if (Q^.next <> NIL) then begin
+                    Q^.next^.previous := Q^.previous;
+                end;
+            end;
+        end;
+
+        if (Q <> NIL) then dispose(Q);
     end;
 end;
 
@@ -62,30 +94,17 @@ New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
 New_worm(EnemyListMeta);
-writeln(EnemyListMeta.count); {4}
-writeln(EnemyListMeta.head^.data); {5}
 
-remove_worm(EnemyListMeta);
+EnemyListMeta.head^.data := 24;
+EnemyListMeta.head^.next^.data := 7;
+
+writeln(EnemyListMeta.count); {4}
+writeln(EnemyListMeta.head^.data); {24}
+
+remove_worm(EnemyListMeta, 24);
 
 writeln(EnemyListMeta.count); {3}
-writeln(EnemyListMeta.head^.data); {5}
+writeln(EnemyListMeta.head^.data); {24}
 
 ReadKey;
 end.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
