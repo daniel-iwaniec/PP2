@@ -10,7 +10,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="DataStructureManipulation"/>
+      <Title Value="pp2"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -33,21 +33,28 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
-        <Filename Value="DataStructureManipulation.pas"/>
+        <Filename Value="pp2.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lista"/>
+        <UnitName Value="pp2"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="unit\pp2unit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pp2Unit"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="project1"/>
+      <Filename Value="pp2"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="unit"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
@@ -58,7 +65,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="4">
+    <Exceptions Count="3">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -68,9 +75,6 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
-      <Item4>
-        <Name Value="Unknown"/>
-      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

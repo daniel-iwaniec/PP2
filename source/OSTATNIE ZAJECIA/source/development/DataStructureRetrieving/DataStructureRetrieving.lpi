@@ -10,7 +10,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="DataStructureManipulation"/>
+      <Title Value="DataStructureRetrieving"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -35,9 +35,9 @@
     </RunParams>
     <Units Count="1">
       <Unit0>
-        <Filename Value="DataStructureManipulation.pas"/>
+        <Filename Value="DataStructureRetrieving.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lista"/>
+        <UnitName Value="DataStructureRetrieving"/>
       </Unit0>
     </Units>
   </ProjectOptions>
@@ -48,6 +48,7 @@
       <Filename Value="project1"/>
     </Target>
     <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
