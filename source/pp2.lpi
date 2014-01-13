@@ -33,17 +33,27 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="2">
+    <Units Count="4">
       <Unit0>
         <Filename Value="pp2.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pp2"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit\pp2unit.pas"/>
+        <Filename Value="unit\pp2Memory.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pp2Unit"/>
+        <UnitName Value="pp2Memory"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="unit\pp2Graph.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pp2Graph"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="unit\pp2Application.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pp2Application"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -3,18 +3,16 @@ program pp2;
 {$mode objfpc}{$H+}
 {$UNITPATH ./units}
 
-uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph;
+uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph, pp2Application;
 
 var
-card : smallint = 0;
-mode : smallint = 0;
+Application : ApplicationPointer;
 
-button : char;
+Board : BoardPointer;
 boardPadding : smallint = 100;
 boardBorderWidth : smallint = 2;
 minX, minY, maxX, maxY : integer;
 
-Board : BoardPointer;
 Player : PlayerPointer;
 
 
@@ -43,7 +41,7 @@ end;
 {-------------------------------------------------}
 
 begin
-     initGraph(card, mode, '');
+     Application := new (ApplicationPointer, initialize);
      Board := new (BoardPointer);
      Player := new (PlayerPointer);
 
@@ -69,12 +67,10 @@ begin
 
      setFillStyle(solidFill, LightBlue);
      bar(x, y, x + playerSize-1, y + playerSize-1);
-     {clear(x, y, x + playerSize, y + playerSize);}
 
      repeat
-           if (keyPressed) then begin
-              button := readKey;
-              if (button = #75) then begin
+           if (Application^.isKeyPressed()) then begin
+              if (Application^.getLastPressedKey() = #75) then begin
                   if (x >= (playerSpeed + minX + 1)) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x - playerSpeed;
@@ -84,7 +80,7 @@ begin
                      x := minX + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #72) then begin
+              end else if (Application^.getLastPressedKey() = #72) then begin
                   if (y >= (playerSpeed + minY + 1)) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y - playerSpeed;
@@ -94,7 +90,7 @@ begin
                      y := minY + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #77) then begin
+              end else if (Application^.getLastPressedKey() = #77) then begin
                   if ((maxX - x - playerSize) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x + playerSpeed;
@@ -104,7 +100,7 @@ begin
                      x := x + (maxX - x - playerSize);
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #80) then begin
+              end else if (Application^.getLastPressedKey() = #80) then begin
                  if ((maxY - y - playerSize) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y + playerSpeed;
@@ -116,13 +112,10 @@ begin
                   end;
               end;
            end;
-           {clearDevice;}
 
+           {Place to generate enemies and interact with them?}
 
-
-
-           {Place to generate enemies and interact with them}
-     until (button = #27);
+     until (Application^.getLastPressedKey() = #27);
 
      closeGraph;
 end.
