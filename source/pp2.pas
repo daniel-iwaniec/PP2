@@ -3,30 +3,33 @@ program pp2;
 {$mode objfpc}{$H+}
 {$UNITPATH ./units}
 
-uses classes, sysUtils, crt, graph, pp2Unit;
+uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph;
 
 var
 card : smallint = 0;
 mode : smallint = 0;
 
-x : integer;
-y : integer;
+button : char;
+boardPadding : smallint = 100;
+boardBorderWidth : smallint = 2;
+minX, minY, maxX, maxY : integer;
 
+Board : BoardPointer;
+Player : PlayerPointer;
+
+
+{---------DO REFAKTORYZACJI----------------------------}
 playerSize : smallint = 10;
 playerSpeed  :smallint = 5;
 
-button : char;
-boardPadding : integer = 100;
-minX, minY, maxX, maxY : integer;
+x : integer;
+y : integer;
 
 EnemyCount : integer = 5;
 EnemyX : integer;
 EnemyY : integer;
 EnemySize : integer = 5;
-
 counter : integer;
-
-Player : PlayerPointer;
 
 procedure clear(minX,minY,maxX,maxY : integer);
 var x, y : integer;
@@ -37,12 +40,14 @@ begin
     end;
   end;
 end;
+{-------------------------------------------------}
 
 begin
+     initGraph(card, mode, '');
+     Board := new (BoardPointer);
      Player := new (PlayerPointer);
 
-     initGraph(card, mode, '');
-     maxX := GetMaxX() - boardPadding;
+     maxX := GetMaxX() - boardPadding - 1;
      maxY := GetMaxY() - boardPadding;
      minX := 0 + boardPadding;
      minY := 0 + boardPadding;

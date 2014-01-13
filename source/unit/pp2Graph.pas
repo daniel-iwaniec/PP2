@@ -4,6 +4,19 @@ unit pp2Graph;
 
 interface
          type
+             BoardPointer = ^Board;
+             Board = object
+             private
+                   padding, borderWidth : integer;
+                   minX, minY, maxX, maxY : integer;
+             public
+                   {function setPadding(newPadding : integer) : boolean;
+                   function getPadding() : smallint;
+
+                   function setBorderWidth(newBorderWidth : integer) : boolean;
+                   function getBorderWidth() : smallint;}
+             end;
+
              Entity = object
              private
                     x, y : integer;
@@ -27,7 +40,7 @@ interface
                    function setSpeed(newSpeed : integer) : boolean;
                    function getSpeed() : integer;
 
-                   procedure clear();
+                   {procedure clear();}
              end;
 
              PlayerPointer = ^Player;
@@ -111,6 +124,16 @@ implementation
               end;
               function Entity.getSpeed() : integer; begin
                        getSpeed := speed;
+              end;
+
+              procedure clear();
+              var x, y : integer;
+              begin
+              {for x := Entity.getX() to maxX-1 do begin
+              for y := minY to maxY-1 do begin
+              PutPixel(x, y, black);
+              end;
+              end;}
               end;
 
               function Enemy.setID(newID : integer) : boolean; begin
