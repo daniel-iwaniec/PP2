@@ -37,7 +37,7 @@
       <Unit0>
         <Filename Value="DataStructureManipulation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lista"/>
+        <UnitName Value="DataStructureManipulation"/>
       </Unit0>
     </Units>
   </ProjectOptions>
