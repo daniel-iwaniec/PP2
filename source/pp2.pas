@@ -7,7 +7,7 @@ uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph, pp2Application;
 
 var
 Application : ApplicationPointer;
-button : char;
+
 Board : BoardPointer;
 boardPadding : smallint = 100;
 boardBorderWidth : smallint = 2;
