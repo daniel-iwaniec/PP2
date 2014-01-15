@@ -10,8 +10,9 @@ Application : ApplicationPointer;
 
 Board : BoardPointer;
 boardPadding : smallint = 100;
-boardBorderWidth : smallint = 2;
+boardBorderWidth : smallint = 6;
 minX, minY, maxX, maxY : integer;
+
 Player : PlayerPointer;
 
 
@@ -40,24 +41,25 @@ end;
 {-------------------------------------------------}
 
 begin
-     initGraph(card, mode, '');
-     Graphics := new (GraphicsPointer);
+     Application := new (ApplicationPointer, initialize);
      Board := new (BoardPointer);
      Player := new (PlayerPointer);
 
-     maxX := GetMaxX() - boardPadding - 1;
-     maxY := GetMaxY() - boardPadding;
      minX := 0 + boardPadding;
      minY := 0 + boardPadding;
+     maxX := GetMaxX() - boardPadding;
+     maxY := GetMaxY() - boardPadding;
 
      SetLineStyle(0, 0, 1);
      SetColor(white);
-     Rectangle(minX,minY,maxX,maxY);
+     for counter := 0 to boardBorderWidth-1 do begin
+       line(minX-counter, minY-(boardBorderWidth-1), minX-counter, maxY+(boardBorderWidth-1));
+       line(maxX+counter, minY-(boardBorderWidth-1), maxX+counter, maxY+(boardBorderWidth-1));
+       line(minX-(boardBorderWidth-1), minY-counter, maxX+(boardBorderWidth-1), minY-counter);
+       line(minX-(boardBorderWidth-1), maxY+counter, maxX+(boardBorderWidth-1), maxY+counter);
+     end;
 
      randomize;
-     x := random(maxX - minX) + minX;
-     y := random(maxY - minY) + minY;
-
      setFillStyle(SolidFill, Red);
      for counter := 0 to EnemyCount do begin
       EnemyX := random(maxX - minX) + minX;
@@ -66,13 +68,13 @@ begin
      end;
 
      setFillStyle(solidFill, LightBlue);
+     x := random(maxX - minX) + minX;
+     y := random(maxY - minY) + minY;
      bar(x, y, x + playerSize-1, y + playerSize-1);
-     {clear(x, y, x + playerSize, y + playerSize);}
 
      repeat
-           if (keyPressed) then begin
-              button := readKey;
-              if (button = #75) then begin
+           if (Application^.isKeyPressed()) then begin
+              if (Application^.getLastPressedKey() = #75) then begin
                   if (x >= (playerSpeed + minX + 1)) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x - playerSpeed;
@@ -82,7 +84,7 @@ begin
                      x := minX + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #72) then begin
+              end else if (Application^.getLastPressedKey() = #72) then begin
                   if (y >= (playerSpeed + minY + 1)) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y - playerSpeed;
@@ -92,7 +94,7 @@ begin
                      y := minY + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #77) then begin
+              end else if (Application^.getLastPressedKey() = #77) then begin
                   if ((maxX - x - playerSize) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x + playerSpeed;
@@ -102,7 +104,7 @@ begin
                      x := x + (maxX - x - playerSize);
                      bar(x, y, x + playerSize-1, y + playerSize-1);
                   end;
-              end else if  (button = #80) then begin
+              end else if (Application^.getLastPressedKey() = #80) then begin
                  if ((maxY - y - playerSize) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y + playerSpeed;
@@ -114,13 +116,10 @@ begin
                   end;
               end;
            end;
-           {clearDevice;}
 
+           {Place to generate enemies and interact with them?}
 
-
-
-           {Place to generate enemies and interact with them}
-     until (button = #27);
+     until (Application^.getLastPressedKey() = #27);
 
      closeGraph;
 end.
