@@ -2,7 +2,6 @@ unit pp2Graph;
 
 {$mode objfpc}{$H+}
 
-
 interface
          uses classes, sysUtils, crt, graph, pp2Application;
 
