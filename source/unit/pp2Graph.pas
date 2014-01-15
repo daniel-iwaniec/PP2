@@ -21,7 +21,6 @@ interface
                    function setPadding(newPadding : integer) : boolean;
                    function setBorderWidth(newBorderWidth : integer) : boolean;
 
-                   function calculateBoundaries(ApplicationConfiguration : ApplicationConfigurationPointer) : boolean;
                    function draw() : boolean;
              public
                    function getPadding() : integer;
@@ -38,8 +37,7 @@ interface
              Entity = object
              private
                     x, y : integer;
-                    width, height : integer;
-                    speed : integer;
+                    size, speed : integer;
              public
                    function setX(newX : integer) : boolean;
                    function getX() : integer;
@@ -48,17 +46,13 @@ interface
 
                    function setPosition(newX, newY : integer) : boolean;
 
-                   function setWidth(newWidth : integer) : boolean;
-                   function getWidth() : integer;
-                   function setHeight(newHeight : integer) : boolean;
-                   function getHeight() : integer;
-
-                   function setDimensions(newWidth, newHeight : integer) : boolean;
+                   function setSize(newSize : integer) : boolean;
+                   function getSize() : integer;
 
                    function setSpeed(newSpeed : integer) : boolean;
                    function getSpeed() : integer;
 
-                   {procedure clear();}
+                   function clear() : boolean;
              end;
 
              PlayerPointer = ^Player;
@@ -73,18 +67,17 @@ interface
                    listNext : EnemyPointer;
                    listPrevious : EnemyPointer;
              public
-                   function setID(newID : integer) : boolean;
+                   {function setID(newID : integer) : boolean;
                    function getID() : integer;
 
                    function setListNext(newListNext : EnemyPointer) : boolean;
                    function getListNext() : EnemyPointer;
 
                    function setListPrevious(newListPrevious : EnemyPointer) : boolean;
-                   function getListPrevious() : EnemyPointer;
+                   function getListPrevious() : EnemyPointer;}
              end;
 
 implementation
-
               function Board.setPadding(newPadding : integer) : boolean; begin
               try
                  padding := newPadding;
@@ -157,16 +150,6 @@ implementation
                except getMaxY := 0; end;
               end;
 
-              function Board.calculateBoundaries(ApplicationConfiguration : ApplicationConfigurationPointer) : boolean; begin
-              try
-                 Board.setMinX(Board.getPadding());
-                 Board.setMinY(Board.getPadding());
-                 Board.setMaxX(ApplicationConfiguration^.getGraphMaxX() - Board.getPadding());
-                 Board.setMaxY(ApplicationConfiguration^.getGraphMaxY() - Board.getPadding());
-                 calculateBoundaries := true;
-              except calculateBoundaries := false; end;
-              end;
-
               function Board.draw() : boolean;
               var i : integer;
               begin try
@@ -186,99 +169,83 @@ implementation
               constructor Board.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                  Board.setPadding(ApplicationConfiguration^.getBoardPadding());
                  Board.setBorderWidth(ApplicationConfiguration^.getBoardBorderWidth());
-                 Board.calculateBoundaries(ApplicationConfiguration);
+
+                 Board.setMinX(Board.getPadding());
+                 Board.setMinY(Board.getPadding());
+                 Board.setMaxX(ApplicationConfiguration^.getGraphMaxX() - Board.getPadding());
+                 Board.setMaxY(ApplicationConfiguration^.getGraphMaxY() - Board.getPadding());
+
                  Board.draw();
               end;
 
               function Entity.setX(newX : integer) : boolean; begin
               try
-                 X := newX;
+                 x := newX;
                  setX := true;
               except setX := false; end;
               end;
               function Entity.getX() : integer; begin
                try
-                  getX := X;
+                  getX := x;
                except getX := 0; end;
               end;
 
               function Entity.setY(newY : integer) : boolean; begin
-                       Y := newY;
-                       setY := true;
+              try
+                 y := newY;
+                 setY := true;
+              except setY := false; end;
               end;
               function Entity.getY() : integer; begin
-                       getY := Y;
+               try
+                  getY := y;
+               except getY := 0; end;
               end;
 
               function Entity.setPosition(newX, newY : integer) : boolean; begin
+               try
                        Entity.setX(newX);
                        Entity.setY(newY);
 
                        setPosition := true;
+               except setPosition := false; end;
               end;
 
-              function Entity.setWidth(newWidth : integer) : boolean; begin
-                       width := newWidth;
-                       setWidth := true;
+              function Entity.setSize(newSize : integer) : boolean; begin
+               try
+                       size := newSize;
+                       setSize := true;
+               except setSize := false; end;
               end;
-              function Entity.getWidth() : integer; begin
-                       getWidth := width;
-              end;
-
-              function Entity.setHeight(newHeight : integer) : boolean; begin
-                       height := newHeight;
-                       setHeight := true;
-              end;
-              function Entity.getHeight() : integer; begin
-                       getHeight := height;
-              end;
-
-              function Entity.setDimensions(newWidth, newHeight : integer) : boolean; begin
-                       Entity.setWidth(newWidth);
-                       Entity.setHeight(newHeight);
-
-                       setDimensions := true;
+              function Entity.getSize() : integer; begin
+               try
+                       getSize := size;
+               except getSize := 0; end;
               end;
 
               function Entity.setSpeed(newSpeed : integer) : boolean; begin
+               try
                        speed := newSpeed;
                        setSpeed := true;
+               except setSpeed := false; end;
               end;
               function Entity.getSpeed() : integer; begin
+               try
                        getSpeed := speed;
+               except getSpeed := 0; end;
               end;
 
-              procedure clear();
-              var x, y : integer;
+              function Entity.clear() : boolean;
+              var localX, localY : integer;
               begin
-              {for x := Entity.getX() to maxX-1 do begin
-              for y := minY to maxY-1 do begin
-              PutPixel(x, y, black);
-              end;
-              end;}
-              end;
-
-              function Enemy.setID(newID : integer) : boolean; begin
-                       ID := newId;
-                       setID := true;
-              end;
-              function Enemy.getID() : integer; begin
-                       getID := ID;
-              end;
-
-              function Enemy.setListNext(newListNext : EnemyPointer) : boolean; begin
-                       listNext := newListNext;
-                       setListnext := true;
-              end;
-              function Enemy.getListNext() : EnemyPointer; begin
-                       getListNext := listNext;
-              end;
-
-              function Enemy.setListPrevious(newListPrevious : EnemyPointer) : boolean; begin
-                       listPrevious := newListPrevious;
-              end;
-              function Enemy.getListPrevious() : EnemyPointer; begin
-                       getListPrevious := listPrevious;
+               try
+                for localX := Entity.getX() to (Entity.getSize() - 1) do begin
+                 for localY := Entity.getY() to (Entity.getSize() - 1) do begin
+                  PutPixel(localX, localY, black);
+                 end;
+                end;
+                clear := true;
+               except clear := false; end;
               end;
 
 end.

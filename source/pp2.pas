@@ -51,7 +51,7 @@ begin
       bar(EnemyX, EnemyY, EnemyX + EnemySize-1, EnemyY + EnemySize-1); {-1 tylko dla size wiekszych od 1}
      end;
 
-     setFillStyle(solidFill, LightBlue);
+     setFillStyle(solidFill, LightBlue); {zle sie losuje dla maxX i maxY}
      x := random(Board^.getMaxX() - Board^.getMinX()) + Board^.getMinX();
      y := random(Board^.getMaxY() - Board^.getMinY()) + Board^.getMinY();
      bar(x, y, x + playerSize-1, y + playerSize-1); {-1 tylko dla size wiekszych od 1}

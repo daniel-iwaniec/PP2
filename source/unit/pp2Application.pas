@@ -3,6 +3,8 @@ unit pp2Application;
 {$mode objfpc}{$H+}
 
 interface
+         uses classes, sysUtils, crt, graph;
+
          type
              ApplicationConfigurationPointer = ^ApplicationConfiguration;
              ApplicationConfiguration = object
@@ -49,8 +51,6 @@ interface
              end;
 
 implementation
-              uses classes, sysUtils, crt, graph;
-
               function Application.setCard(newCard : smallint) : boolean; begin
               try
                  card := newCard;

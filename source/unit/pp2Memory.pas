@@ -3,6 +3,7 @@ unit pp2Memory;
 {$mode objfpc}{$H+}
 
 interface
+         uses classes, sysUtils, crt, graph;
          type
              ListEntityPointer = ^ListEntity;
 
@@ -27,9 +28,6 @@ interface
              end;
 
 implementation
-              uses classes, sysUtils, crt, graph;
-
-
 
 end.
 
