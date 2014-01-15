@@ -7,6 +7,8 @@ uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph, pp2Application;
 
 var
 Application : ApplicationPointer;
+ApplicationConfiguration : ApplicationConfigurationPointer;
+
 Board : BoardPointer;
 Player : PlayerPointer;
 
@@ -35,68 +37,65 @@ end;
 {-------------------------------------------------}
 
 begin
-     Application := new (ApplicationPointer, initialize);
-     Board := new (BoardPointer);
-
-     Board^.setPadding(50);
-     Borad^.setBorderWidth(4);
-     Board^.calculateBoundaries();
+     ApplicationConfiguration := new (ApplicationConfigurationPointer, initialize);
+     Application := new (ApplicationPointer, initialize(ApplicationConfiguration));
+     Board := new (BoardPointer, initialize(ApplicationConfiguration));
 
      Player := new (PlayerPointer);
 
      randomize;
      setFillStyle(SolidFill, Red);
      for counter := 0 to EnemyCount do begin
-      EnemyX := random(maxX - minX) + minX;
-      EnemyY := random(maxY - minY) + minY;
+      EnemyX := random(Board^.getMaxX() - Board^.getMinX()) + Board^.getMinX();
+      EnemyY := random(Board^.getMaxY() - Board^.getMinY()) + Board^.getMinY();
       bar(EnemyX, EnemyY, EnemyX + EnemySize-1, EnemyY + EnemySize-1); {-1 tylko dla size wiekszych od 1}
      end;
 
      setFillStyle(solidFill, LightBlue);
-     x := random(maxX - minX) + minX;
-     y := random(maxY - minY) + minY;
+     x := random(Board^.getMaxX() - Board^.getMinX()) + Board^.getMinX();
+     y := random(Board^.getMaxY() - Board^.getMinY()) + Board^.getMinY();
      bar(x, y, x + playerSize-1, y + playerSize-1); {-1 tylko dla size wiekszych od 1}
 
      repeat
            if (Application^.isKeyPressed()) then begin
               if (Application^.getLastPressedKey() = #75) then begin
-                  if (x >= (playerSpeed + minX)) then begin
+                  if (x >= (playerSpeed + Board^.getMinX())) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x - playerSpeed;
                      bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
-                  end else if (x > minX) then begin
+                  end else if (x > Board^.getMinX()) then begin
                      clear(x, y, x + playerSize, y + playerSize);
-                     x := minX;
+                     x := Board^.getMinX();
                      bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
                   end;
               end else if (Application^.getLastPressedKey() = #72) then begin
-                  if (y >= (playerSpeed + minY)) then begin
+                  if (y >= (playerSpeed + Board^.getMinY())) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y - playerSpeed;
                      bar(x, y, x + playerSize-1, y + playerSize-1);   {-1 tylko dla size wiekszych od 1}
-                  end else if (y > minY) then begin
+                  end else if (y > Board^.getMinY()) then begin
                      clear(x, y, x + playerSize, y + playerSize);
-                     y := minY;
+                     y := Board^.getMinY();
                      bar(x, y, x + playerSize-1, y + playerSize-1);  {-1 tylko dla size wiekszych od 1}
                   end;
               end else if (Application^.getLastPressedKey() = #77) then begin
-                  if ((maxX - x - playerSize + 1) >= playerSpeed) then begin
+                  if ((Board^.getMaxX() - x - playerSize + 1) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      x := x + playerSpeed;
                      bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
-                  end else if ((maxX - x - playerSize + 1) > 0) then begin
+                  end else if ((Board^.getMaxX() - x - playerSize + 1) > 0) then begin
                      clear(x, y, x + playerSize, y + playerSize);
-                     x := maxX - playerSize + 1;
+                     x := Board^.getMaxX() - playerSize + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);     {-1 tylko dla size wiekszych od 1}
                   end;
               end else if (Application^.getLastPressedKey() = #80) then begin
-                 if ((maxY - y - playerSize + 1) >= playerSpeed) then begin
+                 if ((Board^.getMaxY() - y - playerSize + 1) >= playerSpeed) then begin
                      clear(x, y, x + playerSize, y + playerSize);
                      y := y + playerSpeed;
                      bar(x, y, x + playerSize-1, y + playerSize-1);       {-1 tylko dla size wiekszych od 1}
-                  end else if ((maxY - y - playerSize + 1) > 0) then begin
+                  end else if ((Board^.getMaxY() - y - playerSize + 1) > 0) then begin
                      clear(x, y, x + playerSize, y + playerSize);
-                     y := maxY - playerSize + 1;
+                     y := Board^.getMaxY() - playerSize + 1;
                      bar(x, y, x + playerSize-1, y + playerSize-1);   {-1 tylko dla size wiekszych od 1}
                   end;
               end;

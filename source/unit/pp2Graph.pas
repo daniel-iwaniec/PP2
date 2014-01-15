@@ -2,7 +2,10 @@ unit pp2Graph;
 
 {$mode objfpc}{$H+}
 
+
 interface
+         uses classes, sysUtils, crt, graph, pp2Application;
+
          type
              BoardPointer = ^Board;
              Board = object
@@ -14,11 +17,14 @@ interface
                    function setMaxX(newMaxX : integer) : boolean;
                    function setMinY(newMinY : integer) : boolean;
                    function setMaxY(newMaxY : integer) : boolean;
-             public
-                   function setPadding(newPadding : integer) : boolean;
-                   function getPadding() : integer;
 
+                   function setPadding(newPadding : integer) : boolean;
                    function setBorderWidth(newBorderWidth : integer) : boolean;
+
+                   function calculateBoundaries(ApplicationConfiguration : ApplicationConfigurationPointer) : boolean;
+                   function draw() : boolean;
+             public
+                   function getPadding() : integer;
                    function getBorderWidth() : integer;
 
                    function getMinX() : integer;
@@ -26,8 +32,7 @@ interface
                    function getMinY() : integer;
                    function getMaxY() : integer;
 
-                   function calculateBoundaries() : boolean;
-                   function draw() : boolean;
+                   constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
              Entity = object
@@ -79,7 +84,6 @@ interface
              end;
 
 implementation
-              uses classes, sysUtils, crt, graph;
 
               function Board.setPadding(newPadding : integer) : boolean; begin
               try
@@ -153,28 +157,37 @@ implementation
                except getMaxY := 0; end;
               end;
 
-              function Board.calculateBoundaries() : boolean; begin
+              function Board.calculateBoundaries(ApplicationConfiguration : ApplicationConfigurationPointer) : boolean; begin
               try
                  Board.setMinX(Board.getPadding());
                  Board.setMinY(Board.getPadding());
-                 Board.setMaxX(GetMaxX() - Board.getPadding());
-                 Board.setMaxY(GetMaxY() - Board.getPadding());
+                 Board.setMaxX(ApplicationConfiguration^.getGraphMaxX() - Board.getPadding());
+                 Board.setMaxY(ApplicationConfiguration^.getGraphMaxY() - Board.getPadding());
                  calculateBoundaries := true;
               except calculateBoundaries := false; end;
               end;
 
-              function Board.draw() : boolean; begin
-              try
+              function Board.draw() : boolean;
+              var i : integer;
+              begin try
                  SetLineStyle(0, 0, 1);
                  SetColor(white);
-                 for counter := 1 to boardBorderWidth do begin
-                  line(minX-counter, minY-boardBorderWidth, minX-counter, maxY+boardBorderWidth);
-                  line(maxX+counter, minY-boardBorderWidth, maxX+counter, maxY+boardBorderWidth);
-                  line(minX-boardBorderWidth, minY-counter, maxX+boardBorderWidth, minY-counter);
-                  line(minX-boardBorderWidth, maxY+counter, maxX+boardBorderWidth, maxY+counter);
+                 for i := 1 to Board.getBorderWidth() do begin
+                  line(Board.getMinX() - i, Board.getMinY() - Board.getBorderWidth(), Board.getMinX() - i, Board.getMaxY() + Board.getBorderWidth());
+                  line(Board.getMaxX() + i, Board.getMinY() - Board.getBorderWidth(), Board.getMaxX() + i, Board.getMaxY() + Board.getBorderWidth());
+                  line(Board.getMinX() - Board.getBorderWidth(), Board.getMinY() - i, Board.getMaxX() + Board.getBorderWidth(), Board.getMinY() - i);
+                  line(Board.getMinX() - Board.getBorderWidth(), Board.getMaxY() + i, Board.getMaxX() + Board.getBorderWidth(), Board.getMaxY() + i);
                  end;
+
                  draw := true;
               except draw := false; end;
+              end;
+
+              constructor Board.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
+                 Board.setPadding(ApplicationConfiguration^.getBoardPadding());
+                 Board.setBorderWidth(ApplicationConfiguration^.getBoardBorderWidth());
+                 Board.calculateBoundaries(ApplicationConfiguration);
+                 Board.draw();
               end;
 
               function Entity.setX(newX : integer) : boolean; begin
