@@ -10,11 +10,7 @@ Application : ApplicationPointer;
 Board : BoardPointer;
 Player : PlayerPointer;
 
-
 {---------DO REFAKTORYZACJI----------------------------}
-boardPadding : smallint = 100;
-boardBorderWidth : smallint = 6;
-minX, minY, maxX, maxY : integer;
 playerSize : smallint = 10;
 playerSpeed  :smallint = 5;
 
@@ -41,21 +37,12 @@ end;
 begin
      Application := new (ApplicationPointer, initialize);
      Board := new (BoardPointer);
+
+     Board^.setPadding(50);
+     Borad^.setBorderWidth(4);
+     Board^.calculateBoundaries();
+
      Player := new (PlayerPointer);
-
-     minX := 0 + boardPadding;
-     minY := 0 + boardPadding;
-     maxX := GetMaxX() - boardPadding;
-     maxY := GetMaxY() - boardPadding;
-
-     SetLineStyle(0, 0, 1);
-     SetColor(white);
-     for counter := 1 to boardBorderWidth do begin
-       line(minX-counter, minY-boardBorderWidth, minX-counter, maxY+boardBorderWidth);
-       line(maxX+counter, minY-boardBorderWidth, maxX+counter, maxY+boardBorderWidth);
-       line(minX-boardBorderWidth, minY-counter, maxX+boardBorderWidth, minY-counter);
-       line(minX-boardBorderWidth, maxY+counter, maxX+boardBorderWidth, maxY+counter);
-     end;
 
      randomize;
      setFillStyle(SolidFill, Red);

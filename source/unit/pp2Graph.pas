@@ -25,6 +25,9 @@ interface
                    function getMaxX() : integer;
                    function getMinY() : integer;
                    function getMaxY() : integer;
+
+                   function calculateBoundaries() : boolean;
+                   function draw() : boolean;
              end;
 
              Entity = object
@@ -146,8 +149,32 @@ implementation
               end;
               function Board.getMaxY() : integer; begin
                try
-                  getMaxY := maxY;
+                 getMaxY := maxY;
                except getMaxY := 0; end;
+              end;
+
+              function Board.calculateBoundaries() : boolean; begin
+              try
+                 Board.setMinX(Board.getPadding());
+                 Board.setMinY(Board.getPadding());
+                 Board.setMaxX(GetMaxX() - Board.getPadding());
+                 Board.setMaxY(GetMaxY() - Board.getPadding());
+                 calculateBoundaries := true;
+              except calculateBoundaries := false; end;
+              end;
+
+              function Board.draw() : boolean; begin
+              try
+                 SetLineStyle(0, 0, 1);
+                 SetColor(white);
+                 for counter := 1 to boardBorderWidth do begin
+                  line(minX-counter, minY-boardBorderWidth, minX-counter, maxY+boardBorderWidth);
+                  line(maxX+counter, minY-boardBorderWidth, maxX+counter, maxY+boardBorderWidth);
+                  line(minX-boardBorderWidth, minY-counter, maxX+boardBorderWidth, minY-counter);
+                  line(minX-boardBorderWidth, maxY+counter, maxX+boardBorderWidth, maxY+counter);
+                 end;
+                 draw := true;
+              except draw := false; end;
               end;
 
               function Entity.setX(newX : integer) : boolean; begin
