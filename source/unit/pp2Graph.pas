@@ -4,21 +4,6 @@ unit pp2Graph;
 
 interface
          type
-             ApplicationPointer = ^Application;
-             Application = object
-             private
-                   card : smallint;
-                   mode : smallint;
-             public
-                   function setCard(newCard : smallint) : boolean;
-                   function getCard() : smallint;
-
-                   function setMode(newMode : smallint) : boolean;
-                   function getMode() : smallint;
-
-                   function initialize() : boolean;
-             end;
-
              BoardPointer = ^Board;
              Board = object
              private
@@ -82,46 +67,6 @@ interface
 
 implementation
               uses classes, sysUtils, crt, graph;
-
-              function Application.setCard(newCard : smallint) : boolean; begin
-              try
-                 card := newCard;
-                 setCard := true;
-              except setCard := false; end;
-              end;
-              function Application.getCard() : smallint; begin
-               try
-                  getCard := card;
-               except getCard := 0; end;
-              end;
-
-              function Application.setMode(newMode : smallint) : boolean; begin
-              try
-                 mode := newMode;
-                 setMode := true;
-              except setMode := false; end;
-              end;
-              function Application.getMode() : smallint; begin
-               try
-                  getMode := mode;
-               except getMode := 0; end;
-              end;
-
-              function Application.initialize() : boolean;
-              var cardLocal, modeLocal : smallint;
-              begin
-               try
-                  Application.setCard(0);
-                  Application.setMode(0);
-
-                  cardLocal := Application.getCard();
-                  modeLocal := Application.getMode();
-
-                  initGraph(cardLocal, modeLocal, '');
-
-                  initialize := true;
-               except initialize := false; end;
-              end;
 
               function Entity.setX(newX : integer) : boolean; begin
               try
