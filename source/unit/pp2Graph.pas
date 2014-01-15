@@ -9,12 +9,22 @@ interface
              private
                    padding, borderWidth : integer;
                    minX, minY, maxX, maxY : integer;
+
+                   function setMinX(newMinX : integer) : boolean;
+                   function setMaxX(newMaxX : integer) : boolean;
+                   function setMinY(newMinY : integer) : boolean;
+                   function setMaxY(newMaxY : integer) : boolean;
              public
-                   {function setPadding(newPadding : integer) : boolean;
-                   function getPadding() : smallint;
+                   function setPadding(newPadding : integer) : boolean;
+                   function getPadding() : integer;
 
                    function setBorderWidth(newBorderWidth : integer) : boolean;
-                   function getBorderWidth() : smallint;}
+                   function getBorderWidth() : integer;
+
+                   function getMinX() : integer;
+                   function getMaxX() : integer;
+                   function getMinY() : integer;
+                   function getMaxY() : integer;
              end;
 
              Entity = object
@@ -67,6 +77,78 @@ interface
 
 implementation
               uses classes, sysUtils, crt, graph;
+
+              function Board.setPadding(newPadding : integer) : boolean; begin
+              try
+                 padding := newPadding;
+                 setPadding := true;
+              except setPadding := false; end;
+              end;
+              function Board.getPadding() : integer; begin
+               try
+                  getPadding := padding;
+               except getPadding := 0; end;
+              end;
+
+              function Board.setBorderWidth(newBorderWidth : integer) : boolean; begin
+              try
+                 borderWidth := newBorderWidth;
+                 setBorderWidth := true;
+              except setBorderWidth := false; end;
+              end;
+              function Board.getBorderWidth() : integer; begin
+               try
+                  getBorderWidth := borderWidth;
+               except getBorderWidth := 0; end;
+              end;
+
+              function Board.setMinX(newMinX : integer) : boolean; begin
+              try
+                 minX := newMinX;
+                 setMinX := true;
+              except setMinX := false; end;
+              end;
+              function Board.getMinX() : integer; begin
+               try
+                  getMinX := minX;
+               except getMinX := 0; end;
+              end;
+
+              function Board.setMaxX(newMaxX : integer) : boolean; begin
+              try
+                 maxX := newMaxX;
+                 setMaxX := true;
+              except setMaxX := false; end;
+              end;
+              function Board.getMaxX() : integer; begin
+               try
+                  getMaxX := maxX;
+               except getMaxX := 0; end;
+              end;
+
+              function Board.setMinY(newMinY : integer) : boolean; begin
+              try
+                 minY := newMinY;
+                 setMinY := true;
+              except setMinY := false; end;
+              end;
+              function Board.getMinY() : integer; begin
+               try
+                  getMinY := minY;
+               except getMinY := 0; end;
+              end;
+
+              function Board.setMaxY(newMaxY : integer) : boolean; begin
+              try
+                 maxY := newMaxY;
+                 setMaxY := true;
+              except setMaxY := false; end;
+              end;
+              function Board.getMaxY() : integer; begin
+               try
+                  getMaxY := maxY;
+               except getMaxY := 0; end;
+              end;
 
               function Entity.setX(newX : integer) : boolean; begin
               try

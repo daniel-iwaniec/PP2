@@ -7,16 +7,14 @@ uses classes, sysUtils, crt, graph, pp2Memory, pp2Graph, pp2Application;
 
 var
 Application : ApplicationPointer;
-
 Board : BoardPointer;
-boardPadding : smallint = 100;
-boardBorderWidth : smallint = 6;
-minX, minY, maxX, maxY : integer;
-
 Player : PlayerPointer;
 
 
 {---------DO REFAKTORYZACJI----------------------------}
+boardPadding : smallint = 100;
+boardBorderWidth : smallint = 6;
+minX, minY, maxX, maxY : integer;
 playerSize : smallint = 10;
 playerSpeed  :smallint = 5;
 
