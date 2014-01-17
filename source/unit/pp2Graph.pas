@@ -56,6 +56,15 @@ interface
 
              PlayerPointer = ^Player;
              Player = object (Entity)
+             public
+                   function draw() : boolean;
+
+                   function moveUp() : boolean;
+                   function moveDown() : boolean;
+                   function moveRight() : boolean;
+                   function moveLeft() : boolean;
+
+                   constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
              EnemyPointer = ^Enemy;
@@ -212,8 +221,12 @@ implementation
 
               function Entity.setSize(newSize : integer) : boolean; begin
                try
-                       size := newSize;
-                       setSize := true;
+                       if (newSize < 2) then begin
+                           setSize := false;
+                       end else begin
+                           size := newSize;
+                           setSize := true;
+                       end;
                except setSize := false; end;
               end;
               function Entity.getSize() : integer; begin
@@ -238,8 +251,8 @@ implementation
               var localX, localY : integer;
               begin
                try
-                for localX := Entity.getX() to (Entity.getSize() - 1) do begin
-                 for localY := Entity.getY() to (Entity.getSize() - 1) do begin
+                for localX := Entity.getX() to (Entity.getX() + Entity.getSize() - 1) do begin
+                 for localY := Entity.getY() to (Entity.getY() + Entity.getSize() - 1) do begin
                   PutPixel(localX, localY, black);
                  end;
                 end;
@@ -247,5 +260,53 @@ implementation
                except clear := false; end;
               end;
 
+              function Player.draw() : boolean; begin
+               try
+                setFillStyle(solidFill, LightBlue);
+                bar(Player.getX(), Player.getY(), Player.getX() + Player.getSize() - 1, Player.getY() + Player.getSize() - 1);
+                draw := true;
+               except draw := false; end;
+              end;
+
+              function Player.moveUp() : boolean; begin
+               try
+                self.clear();
+                Player.setY(Player.getY() - Player.getSpeed());
+                Player.draw();
+                moveUp := true;
+               except moveUp := false; end;
+              end;
+
+              function Player.moveDown() : boolean; begin
+               try
+                self.clear();
+                Player.setY(Player.getY() + Player.getSpeed());
+                Player.draw();
+                moveDown := true;
+               except moveDown := false; end;
+              end;
+
+              function Player.moveRight() : boolean; begin
+               try
+                self.clear();
+                Player.setX(Player.getX() + Player.getSpeed());
+                Player.draw();
+                moveRight := true;
+               except moveRight := false; end;
+              end;
+
+              function Player.moveLeft() : boolean; begin
+               try
+                self.clear();
+                Player.setX(Player.getX() - Player.getSpeed());
+                Player.draw();
+                moveLeft := true;
+               except moveLeft := false; end;
+              end;
+
+              constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer);begin
+                Player.setSize(ApplicationConfiguration^.getDefaultPlayerSize());
+                Player.setSpeed(ApplicationConfiguration^.getDefaultPlayerSpeed());
+              end;
 end.
 

@@ -14,17 +14,25 @@ interface
 
                    graphMaxX, graphMaxY : integer;
 
+                   defaultPlayerSize, defaultPlayerSpeed : integer;
+
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
 
                    function setGraphMaxX(newGraphMaxX: integer) : boolean;
                    function setGraphMaxY(newGraphMaxY: integer) : boolean;
+
+                   function setDefaultPlayerSize(newDefaultPlayerSize: integer) : boolean;
+                   function setDefaultPlayerSpeed(newDefaultPlayerSpeed: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
 
                    function getGraphMaxX() : integer;
                    function getGraphMaxY() : integer;
+
+                   function getDefaultPlayerSize() : integer;
+                   function getDefaultPlayerSpeed() : integer;
 
                    constructor initialize();
              end;
@@ -37,17 +45,17 @@ interface
                    lastPressedKey : char;
 
                    function setLastPressedKey(newLastPressedKey : char) : boolean;
-             public
                    function setCard(newCard : smallint) : boolean;
-                   function getCard() : smallint;
-
                    function setMode(newMode : smallint) : boolean;
+             public
+                   function getCard() : smallint;
                    function getMode() : smallint;
 
                    function isKeyPressed() : boolean;
                    function getLastPressedKey() : char;
 
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
+                   destructor close();
              end;
 
 implementation
@@ -99,6 +107,8 @@ implementation
               constructor Application.initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
                var cardLocal, modeLocal : smallint;
                begin
+                randomize;
+
                 Application.setCard(0);
                 Application.setMode(0);
 
@@ -108,6 +118,10 @@ implementation
                 initGraph(cardLocal, modeLocal, '');
                 ApplicationConfiguration^.setGraphMaxX(GetMaxX());
                 ApplicationConfiguration^.setGraphMaxY(GetMaxY());
+              end;
+
+              destructor Application.close(); begin
+                closeGraph;
               end;
 
               function ApplicationConfiguration.setBoardPadding(newBoardPadding : integer) : boolean; begin
@@ -156,9 +170,35 @@ implementation
                except getGraphMaxY := 0; end;
               end;
 
+              function ApplicationConfiguration.setDefaultPlayerSize(newDefaultPlayerSize : integer) : boolean; begin
+              try
+                 defaultPlayerSize := newDefaultPlayerSize;
+                 setDefaultPlayerSize := true;
+              except setDefaultPlayerSize := false; end;
+              end;
+              function ApplicationConfiguration.getDefaultPlayerSize() : integer; begin
+               try
+                  getDefaultPlayerSize := defaultPlayerSize;
+               except getDefaultPlayerSize := 0; end;
+              end;
+              function ApplicationConfiguration.setDefaultPlayerSpeed(newDefaultPlayerSpeed : integer) : boolean; begin
+              try
+                 defaultPlayerSpeed := newDefaultPlayerSpeed;
+                 setDefaultPlayerSpeed := true;
+              except setDefaultPlayerSpeed := false; end;
+              end;
+              function ApplicationConfiguration.getDefaultPlayerSpeed() : integer; begin
+               try
+                  getDefaultPlayerSpeed := defaultPlayerSpeed;
+               except getDefaultPlayerSpeed := 0; end;
+              end;
+
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
                 ApplicationConfiguration.setBoardBorderWidth(4);
+
+                ApplicationConfiguration.setDefaultPlayerSize(10);
+                ApplicationConfiguration.setDefaultPlayerSpeed(10);
               end;
 end.
 

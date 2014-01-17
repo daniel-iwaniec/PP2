@@ -12,99 +12,77 @@ ApplicationConfiguration : ApplicationConfigurationPointer;
 Board : BoardPointer;
 Player : PlayerPointer;
 
-{---------DO REFAKTORYZACJI----------------------------}
-playerSize : smallint = 10;
-playerSpeed  :smallint = 5;
+{EnemyPointer}
+{
+ W konfiguracji ustawic size, speed, ilosc, czestotliwosc
+ losowac polozenie
+ rysowac
 
-x : integer;
-y : integer;
-
-EnemyCount : integer = 5;
-EnemyX : integer;
-EnemyY : integer;
-EnemySize : integer = 5;
-counter : integer;
-
-procedure clear(minX,minY,maxX,maxY : integer);
-var x, y : integer;
-begin
-  for x := minX to maxX-1 do begin  {-1 tylko dla size wiekszych od 1}
-    for y := minY to maxY-1 do begin   {-1 tylko dla size wiekszych od 1}
-      PutPixel(x, y, black);
-    end;
-  end;
-end;
-{-------------------------------------------------}
+ potem musze sie rusza
+ potem wykrywanie kolizji
+ potem event na kolizje i obsluga eventu (zwlaszcza w pamieci)
+}
 
 begin
      ApplicationConfiguration := new (ApplicationConfigurationPointer, initialize);
      Application := new (ApplicationPointer, initialize(ApplicationConfiguration));
+
      Board := new (BoardPointer, initialize(ApplicationConfiguration));
+     {przeypisanie do board playera}
 
-     Player := new (PlayerPointer);
-
-     randomize;
-     setFillStyle(SolidFill, Red);
-     for counter := 0 to EnemyCount do begin
-      EnemyX := random(Board^.getMaxX() - Board^.getMinX()) + Board^.getMinX();
-      EnemyY := random(Board^.getMaxY() - Board^.getMinY()) + Board^.getMinY();
-      bar(EnemyX, EnemyY, EnemyX + EnemySize-1, EnemyY + EnemySize-1); {-1 tylko dla size wiekszych od 1}
-     end;
-
-     setFillStyle(solidFill, LightBlue); {zle sie losuje dla maxX i maxY}
-     x := random(Board^.getMaxX() - Board^.getMinX()) + Board^.getMinX();
-     y := random(Board^.getMaxY() - Board^.getMinY()) + Board^.getMinY();
-     bar(x, y, x + playerSize-1, y + playerSize-1); {-1 tylko dla size wiekszych od 1}
+     Player := new (PlayerPointer, initialize(ApplicationConfiguration));
+     {metoda set random position}
+     Player^.setX(random(Board^.getMaxX() - Board^.getMinX() - Player^.getSize()) + Board^.getMinX());
+     Player^.setY(random(Board^.getMaxY() - Board^.getMinY() - Player^.getSize()) + Board^.getMinY());
+     Player^.draw();
 
      repeat
            if (Application^.isKeyPressed()) then begin
               if (Application^.getLastPressedKey() = #75) then begin
-                  if (x >= (playerSpeed + Board^.getMinX())) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     x := x - playerSpeed;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
-                  end else if (x > Board^.getMinX()) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     x := Board^.getMinX();
-                     bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
+                 {wrzucic to wszystko do moveLeft}
+                  if (Player^.getX() >= (Player^.getSpeed() + Board^.getMinX())) then begin
+                     Player^.moveLeft();
+                  end else if (Player^.getX() > Board^.getMinX()) then begin
+                     Player^.clear();
+                     Player^.setX(Board^.getMinX());
+                     Player^.draw();
                   end;
+                  {/}
               end else if (Application^.getLastPressedKey() = #72) then begin
-                  if (y >= (playerSpeed + Board^.getMinY())) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     y := y - playerSpeed;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);   {-1 tylko dla size wiekszych od 1}
-                  end else if (y > Board^.getMinY()) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     y := Board^.getMinY();
-                     bar(x, y, x + playerSize-1, y + playerSize-1);  {-1 tylko dla size wiekszych od 1}
+                  {wrzucic to wszystko do moveUp}
+                  if (Player^.getY() >= (Player^.getSpeed() + Board^.getMinY())) then begin
+                     Player^.moveUp();
+                  end else if (Player^.getY() > Board^.getMinY()) then begin
+                     Player^.clear();
+                     Player^.setY(Board^.getMinX());
+                     Player^.draw();
                   end;
+                  {/}
               end else if (Application^.getLastPressedKey() = #77) then begin
-                  if ((Board^.getMaxX() - x - playerSize + 1) >= playerSpeed) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     x := x + playerSpeed;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);    {-1 tylko dla size wiekszych od 1}
-                  end else if ((Board^.getMaxX() - x - playerSize + 1) > 0) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     x := Board^.getMaxX() - playerSize + 1;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);     {-1 tylko dla size wiekszych od 1}
+                  {wrzucic to wszystko do moveRight}
+                  if ((Board^.getMaxX() - Player^.getX() - Player^.getSize() + 1) >= Player^.getSpeed()) then begin
+                     Player^.moveRight();
+                  end else if ((Board^.getMaxX() - Player^.getX() - Player^.getSize() + 1) > 0) then begin
+                     Player^.clear();
+                     Player^.setX(Board^.getMaxX() - Player^.getSize() + 1);
+                     Player^.draw();
                   end;
+                  {/}
               end else if (Application^.getLastPressedKey() = #80) then begin
-                 if ((Board^.getMaxY() - y - playerSize + 1) >= playerSpeed) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     y := y + playerSpeed;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);       {-1 tylko dla size wiekszych od 1}
-                  end else if ((Board^.getMaxY() - y - playerSize + 1) > 0) then begin
-                     clear(x, y, x + playerSize, y + playerSize);
-                     y := Board^.getMaxY() - playerSize + 1;
-                     bar(x, y, x + playerSize-1, y + playerSize-1);   {-1 tylko dla size wiekszych od 1}
+                 {wrzucic to wszystko do moveLeft}
+                 if ((Board^.getMaxY() - Player^.getY() - Player^.getSize() + 1) >= Player^.getSpeed()) then begin
+                     Player^.moveDown();
+                  end else if ((Board^.getMaxY() - Player^.getY() - Player^.getSize() + 1) > 0) then begin
+                     Player^.clear();
+                     Player^.setY(Board^.getMaxY() - Player^.getSize() + 1);
+                     Player^.draw();
                   end;
+                  {/}
               end;
            end;
 
-           {Place to generate enemies and interact with them?}
-
      until (Application^.getLastPressedKey() = #27);
 
-     closeGraph;
+     Application^.close();
 end.
 
