@@ -16,6 +16,8 @@ interface
 
                    defaultPlayerSize, defaultPlayerSpeed : integer;
 
+                   defaultEnemySize, defaultEnemySpeed: integer;
+
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
 
@@ -24,6 +26,9 @@ interface
 
                    function setDefaultPlayerSize(newDefaultPlayerSize: integer) : boolean;
                    function setDefaultPlayerSpeed(newDefaultPlayerSpeed: integer) : boolean;
+
+                   function setDefaultEnemySize(newDefaultEnemySize: integer) : boolean;
+                   function setDefaultEnemySpeed(newDefaultEnemySpeed: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
@@ -33,6 +38,9 @@ interface
 
                    function getDefaultPlayerSize() : integer;
                    function getDefaultPlayerSpeed() : integer;
+
+                   function getDefaultEnemySize() : integer;
+                   function getDefaultEnemySpeed() : integer;
 
                    constructor initialize();
              end;
@@ -245,12 +253,38 @@ implementation
                except getDefaultPlayerSpeed := 0; end;
               end;
 
+              function ApplicationConfiguration.setDefaultEnemySize(newDefaultEnemySize : integer) : boolean; begin
+              try
+                 defaultEnemySize := newDefaultEnemySize;
+                 setDefaultEnemySize := true;
+              except setDefaultEnemySize := false; end;
+              end;
+              function ApplicationConfiguration.getDefaultEnemySize() : integer; begin
+               try
+                  getDefaultEnemySize := defaultEnemySize;
+               except getDefaultEnemySize := 0; end;
+              end;
+              function ApplicationConfiguration.setDefaultEnemySpeed(newDefaultEnemySpeed : integer) : boolean; begin
+              try
+                 defaultEnemySpeed := newDefaultEnemySpeed;
+                 setDefaultEnemySpeed := true;
+              except setDefaultEnemySpeed := false; end;
+              end;
+              function ApplicationConfiguration.getDefaultEnemySpeed() : integer; begin
+               try
+                  getDefaultEnemySpeed := defaultEnemySpeed;
+               except getDefaultEnemySpeed := 0; end;
+              end;
+
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
                 ApplicationConfiguration.setBoardBorderWidth(4);
 
                 ApplicationConfiguration.setDefaultPlayerSize(10);
                 ApplicationConfiguration.setDefaultPlayerSpeed(10);
+
+                ApplicationConfiguration.setDefaultEnemySize(5);
+                ApplicationConfiguration.setDefaultEnemySpeed(5);
               end;
 end.
 

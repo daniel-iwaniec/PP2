@@ -2,17 +2,6 @@ unit pp2Graph;
 
 {$mode objfpc}{$H+}
 
-{EnemyPointer}
-{
- W konfiguracji ustawic size, speed, ilosc, czestotliwosc
- losowac polozenie
- rysowac
-
- potem musze sie rusza
- potem wykrywanie kolizji
- potem event na kolizje i obsluga eventu (zwlaszcza w pamieci)
-}
-
 interface
          uses classes, sysUtils, crt, graph, pp2Application;
 
@@ -27,6 +16,7 @@ interface
                    minX, minY, maxX, maxY : integer;
 
                    Player : PlayerPointer;
+                   Enemy : EnemyPointer;
 
                    function setMinX(newMinX : integer) : boolean;
                    function setMaxX(newMaxX : integer) : boolean;
@@ -48,6 +38,9 @@ interface
 
                    function setPlayer(newPlayer : PlayerPointer; selfPointer : BoardPointer) : boolean;
                    function getPlayer() : PlayerPointer;
+
+                   function setEnemy(newEnemy : EnemyPointer; selfPointer : BoardPointer) : boolean;
+                   function getEnemy() : EnemyPointer;
 
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
@@ -93,19 +86,22 @@ interface
 
              Enemy = object (Entity)
              private
-                   ID : integer;
+                   Board : BoardPointer;
 
-                   listNext : EnemyPointer;
-                   listPrevious : EnemyPointer;
+                   function setBoard(newBoard : BoardPointer) : boolean;
              public
-                   {function setID(newID : integer) : boolean;
-                   function getID() : integer;
+                   function draw() : boolean;
 
-                   function setListNext(newListNext : EnemyPointer) : boolean;
-                   function getListNext() : EnemyPointer;
+                   function moveUp() : boolean;
+                   function moveDown() : boolean;
+                   function moveRight() : boolean;
+                   function moveLeft() : boolean;
 
-                   function setListPrevious(newListPrevious : EnemyPointer) : boolean;
-                   function getListPrevious() : EnemyPointer;}
+                   function randomizePosition() : boolean;
+
+                   function getBoard() : BoardPointer;
+
+                   constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
 implementation
@@ -208,6 +204,19 @@ implementation
                try
                  getPlayer := Player;
                except getPlayer := nil; end;
+              end;
+
+              function Board.setEnemy(newEnemy : EnemyPointer; selfPointer : BoardPointer) : boolean;  begin
+               try
+                newEnemy^.setBoard(selfPointer);
+                Enemy := newEnemy;
+                setEnemy := true;
+               except setEnemy := false; end;
+              end;
+              function Board.getEnemy() : EnemyPointer; begin
+               try
+                 getEnemy := Enemy;
+               except getEnemy := nil; end;
               end;
 
               constructor Board.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
@@ -375,9 +384,102 @@ implementation
                except getBoard := nil; end;
               end;
 
-              constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer);begin
+              constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Player.setSize(ApplicationConfiguration^.getDefaultPlayerSize());
                 Player.setSpeed(ApplicationConfiguration^.getDefaultPlayerSpeed());
+              end;
+
+              function Enemy.draw() : boolean; begin
+               try
+                setFillStyle(solidFill, Red);
+                bar(Enemy.getX(), Enemy.getY(), Enemy.getX() + Enemy.getSize() - 1, Enemy.getY() + Enemy.getSize() - 1);
+                draw := true;
+               except draw := false; end;
+              end;
+
+              function Enemy.moveUp() : boolean; begin
+               try
+                  if (Enemy.getY() >= (Enemy.getSpeed() + Enemy.getBoard()^.getMinY())) then begin
+                     self.clear();
+                     Enemy.setY(Enemy.getY() - Enemy.getSpeed());
+                     Enemy.draw();
+                  end else if (Enemy.getY() > Enemy.getBoard()^.getMinY()) then begin
+                     Enemy.clear();
+                     Enemy.setY(Enemy.getBoard()^.getMinX());
+                     Enemy.draw();
+                  end;
+                moveUp := true;
+               except moveUp := false; end;
+              end;
+
+              function Enemy.moveDown() : boolean; begin
+               try
+                 if ((Enemy.getBoard()^.getMaxY() - Enemy.getY() - Enemy.getSize() + 1) >= Enemy.getSpeed()) then begin
+                     self.clear();
+                     Enemy.setY(Enemy.getY() + Enemy.getSpeed());
+                     Enemy.draw();
+                  end else if ((Enemy.getBoard()^.getMaxY() - Enemy.getY() - Enemy.getSize() + 1) > 0) then begin
+                     Enemy.clear();
+                     Enemy.setY(Enemy.getBoard()^.getMaxY() - Enemy.getSize() + 1);
+                     Enemy.draw();
+                  end;
+                moveDown := true;
+               except moveDown := false; end;
+              end;
+
+              function Enemy.moveRight() : boolean; begin
+               try
+                  if ((Enemy.getBoard()^.getMaxX() - Enemy.getX() - Enemy.getSize() + 1) >= Enemy.getSpeed()) then begin
+                     self.clear();
+                     Enemy.setX(Enemy.getX() + Enemy.getSpeed());
+                     Enemy.draw();
+                  end else if ((Enemy.getBoard()^.getMaxX() - Enemy.getX() - Enemy.getSize() + 1) > 0) then begin
+                     Enemy.clear();
+                     Enemy.setX(Enemy.getBoard()^.getMaxX() - Enemy.getSize() + 1);
+                     Enemy.draw();
+                  end;
+                moveRight := true;
+               except moveRight := false; end;
+              end;
+
+              function Enemy.moveLeft() : boolean; begin
+               try
+                  if (Enemy.getX() >= (Enemy.getSpeed() + Enemy.getBoard()^.getMinX())) then begin
+                     self.clear();
+                     Enemy.setX(Enemy.getX() - Enemy.getSpeed());
+                     Enemy.draw();
+                  end else if (Enemy.getX() > Enemy.getBoard()^.getMinX()) then begin
+                     Enemy.clear();
+                     Enemy.setX(Board^.getMinX());
+                     Enemy.draw();
+                  end;
+                moveLeft := true;
+               except moveLeft := false; end;
+              end;
+
+              function Enemy.randomizePosition() : boolean; begin
+               try
+                Enemy.setX(random(Enemy.getBoard()^.getMaxX() - Enemy.getBoard()^.getMinX() - Enemy.getSize()) + Enemy.getBoard()^.getMinX());
+                Enemy.setY(random(Enemy.getBoard()^.getMaxY() - Enemy.getBoard()^.getMinY() - Enemy.getSize()) + Enemy.getBoard()^.getMinY());
+                randomizePosition := true;
+               except randomizePosition := false; end;
+              end;
+
+              function Enemy.setBoard(newBoard : BoardPointer) : boolean;  begin
+               try
+                Board := newBoard;
+                setBoard := true;
+               except setBoard := false; end;
+              end;
+              function Enemy.getBoard() : BoardPointer; begin
+               try
+                 getBoard := Board;
+               except getBoard := nil; end;
+              end;
+
+              constructor Enemy.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
+                Enemy.setSize(ApplicationConfiguration^.getDefaultEnemySize());
+                Enemy.setSpeed(ApplicationConfiguration^.getDefaultEnemySpeed());
               end;
 end.
 
