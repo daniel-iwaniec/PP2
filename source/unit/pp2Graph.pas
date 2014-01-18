@@ -2,15 +2,31 @@ unit pp2Graph;
 
 {$mode objfpc}{$H+}
 
+{EnemyPointer}
+{
+ W konfiguracji ustawic size, speed, ilosc, czestotliwosc
+ losowac polozenie
+ rysowac
+
+ potem musze sie rusza
+ potem wykrywanie kolizji
+ potem event na kolizje i obsluga eventu (zwlaszcza w pamieci)
+}
+
 interface
          uses classes, sysUtils, crt, graph, pp2Application;
 
          type
              BoardPointer = ^Board;
+             PlayerPointer = ^Player;
+             EnemyPointer = ^Enemy;
+
              Board = object
              private
                    padding, borderWidth : integer;
                    minX, minY, maxX, maxY : integer;
+
+                   Player : PlayerPointer;
 
                    function setMinX(newMinX : integer) : boolean;
                    function setMaxX(newMaxX : integer) : boolean;
@@ -30,6 +46,9 @@ interface
                    function getMinY() : integer;
                    function getMaxY() : integer;
 
+                   function setPlayer(newPlayer : PlayerPointer; selfPointer : BoardPointer) : boolean;
+                   function getPlayer() : PlayerPointer;
+
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
@@ -43,8 +62,6 @@ interface
                    function setY(newY : integer) : boolean;
                    function getY() : integer;
 
-                   function setPosition(newX, newY : integer) : boolean;
-
                    function setSize(newSize : integer) : boolean;
                    function getSize() : integer;
 
@@ -54,8 +71,11 @@ interface
                    function clear() : boolean;
              end;
 
-             PlayerPointer = ^Player;
              Player = object (Entity)
+             private
+                   Board : BoardPointer;
+
+                   function setBoard(newBoard : BoardPointer) : boolean;
              public
                    function draw() : boolean;
 
@@ -64,10 +84,13 @@ interface
                    function moveRight() : boolean;
                    function moveLeft() : boolean;
 
+                   function randomizePosition() : boolean;
+
+                   function getBoard() : BoardPointer;
+
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
-             EnemyPointer = ^Enemy;
              Enemy = object (Entity)
              private
                    ID : integer;
@@ -174,6 +197,19 @@ implementation
               except draw := false; end;
               end;
 
+              function Board.setPlayer(newPlayer : PlayerPointer; selfPointer : BoardPointer) : boolean;  begin
+               try
+                newPlayer^.setBoard(selfPointer);
+                Player := newPlayer;
+                setPlayer := true;
+               except setPlayer := false; end;
+              end;
+              function Board.getPlayer() : PlayerPointer; begin
+               try
+                 getPlayer := Player;
+               except getPlayer := nil; end;
+              end;
+
               constructor Board.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                  Board.setPadding(ApplicationConfiguration^.getBoardPadding());
                  Board.setBorderWidth(ApplicationConfiguration^.getBoardBorderWidth());
@@ -208,15 +244,6 @@ implementation
                try
                   getY := y;
                except getY := 0; end;
-              end;
-
-              function Entity.setPosition(newX, newY : integer) : boolean; begin
-               try
-                       Entity.setX(newX);
-                       Entity.setY(newY);
-
-                       setPosition := true;
-               except setPosition := false; end;
               end;
 
               function Entity.setSize(newSize : integer) : boolean; begin
@@ -270,38 +297,82 @@ implementation
 
               function Player.moveUp() : boolean; begin
                try
-                self.clear();
-                Player.setY(Player.getY() - Player.getSpeed());
-                Player.draw();
+                  if (Player.getY() >= (Player.getSpeed() + Player.getBoard()^.getMinY())) then begin
+                     self.clear();
+                     Player.setY(Player.getY() - Player.getSpeed());
+                     Player.draw();
+                  end else if (Player.getY() > Player.getBoard()^.getMinY()) then begin
+                     Player.clear();
+                     Player.setY(Player.getBoard()^.getMinX());
+                     Player.draw();
+                  end;
                 moveUp := true;
                except moveUp := false; end;
               end;
 
               function Player.moveDown() : boolean; begin
                try
-                self.clear();
-                Player.setY(Player.getY() + Player.getSpeed());
-                Player.draw();
+                 if ((Player.getBoard()^.getMaxY() - Player.getY() - Player.getSize() + 1) >= Player.getSpeed()) then begin
+                     self.clear();
+                     Player.setY(Player.getY() + Player.getSpeed());
+                     Player.draw();
+                  end else if ((Player.getBoard()^.getMaxY() - Player.getY() - Player.getSize() + 1) > 0) then begin
+                     Player.clear();
+                     Player.setY(Player.getBoard()^.getMaxY() - Player.getSize() + 1);
+                     Player.draw();
+                  end;
                 moveDown := true;
                except moveDown := false; end;
               end;
 
               function Player.moveRight() : boolean; begin
                try
-                self.clear();
-                Player.setX(Player.getX() + Player.getSpeed());
-                Player.draw();
+                  if ((Player.getBoard()^.getMaxX() - Player.getX() - Player.getSize() + 1) >= Player.getSpeed()) then begin
+                     self.clear();
+                     Player.setX(Player.getX() + Player.getSpeed());
+                     Player.draw();
+                  end else if ((Player.getBoard()^.getMaxX() - Player.getX() - Player.getSize() + 1) > 0) then begin
+                     Player.clear();
+                     Player.setX(Player.getBoard()^.getMaxX() - Player.getSize() + 1);
+                     Player.draw();
+                  end;
                 moveRight := true;
                except moveRight := false; end;
               end;
 
               function Player.moveLeft() : boolean; begin
                try
-                self.clear();
-                Player.setX(Player.getX() - Player.getSpeed());
-                Player.draw();
+                  if (Player.getX() >= (Player.getSpeed() + Player.getBoard()^.getMinX())) then begin
+                     self.clear();
+                     Player.setX(Player.getX() - Player.getSpeed());
+                     Player.draw();
+                  end else if (Player.getX() > Player.getBoard()^.getMinX()) then begin
+                     Player.clear();
+                     Player.setX(Board^.getMinX());
+                     Player.draw();
+                  end;
                 moveLeft := true;
                except moveLeft := false; end;
+              end;
+
+              function Player.randomizePosition() : boolean; begin
+               try
+                Player.setX(random(Player.getBoard()^.getMaxX() - Player.getBoard()^.getMinX() - Player.getSize()) + Player.getBoard()^.getMinX());
+                Player.setY(random(Player.getBoard()^.getMaxY() - Player.getBoard()^.getMinY() - Player.getSize()) + Player.getBoard()^.getMinY());
+                randomizePosition := true;
+               except randomizePosition := false; end;
+              end;
+
+              function Player.setBoard(newBoard : BoardPointer) : boolean;  begin
+               try
+                Board := newBoard;
+                setBoard := true;
+               except setBoard := false; end;
+              end;
+              function Player.getBoard() : BoardPointer; begin
+               try
+                 getBoard := Board;
+               except getBoard := nil; end;
               end;
 
               constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer);begin

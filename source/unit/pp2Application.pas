@@ -54,6 +54,12 @@ interface
                    function isKeyPressed() : boolean;
                    function getLastPressedKey() : char;
 
+                   function isUpKeyPressed() : boolean;
+                   function isDownKeyPressed() : boolean;
+                   function isRightKeyPressed() : boolean;
+                   function isLeftKeyPressed() : boolean;
+                   function isCloseKeyPressed() : boolean;
+
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
                    destructor close();
              end;
@@ -102,6 +108,52 @@ implementation
                end else begin
                   isKeyPressed := false;
                end;
+              end;
+
+              function Application.isUpKeyPressed() : boolean; begin
+               try
+                  if (Application.getLastPressedKey() = #72) then begin
+                     isUpKeyPressed := true;
+                  end else begin
+                     isUpKeyPressed := false;
+                  end;
+               except isUpKeyPressed := false; end;
+              end;
+              function Application.isDownKeyPressed() : boolean; begin
+               try
+                  if (Application.getLastPressedKey() = #80) then begin
+                     isDownKeyPressed := true;
+                  end else begin
+                     isDownKeyPressed := false;
+                  end;
+               except isDownKeyPressed := false; end;
+              end;
+              function Application.isRightKeyPressed() : boolean; begin
+               try
+                  if (Application.getLastPressedKey() = #77) then begin
+                     isRightKeyPressed := true;
+                  end else begin
+                     isRightKeyPressed := false;
+                  end;
+               except isRightKeyPressed := false; end;
+              end;
+              function Application.isLeftKeyPressed() : boolean; begin
+               try
+                  if (Application.getLastPressedKey() = #75) then begin
+                     isLeftKeyPressed := true;
+                  end else begin
+                     isLeftKeyPressed := false;
+                  end;
+               except isLeftKeyPressed := false; end;
+              end;
+              function Application.isCloseKeyPressed() : boolean; begin
+               try
+                  if (Application.getLastPressedKey() = #27) then begin
+                     isCloseKeyPressed := true;
+                  end else begin
+                     isCloseKeyPressed := false;
+                  end;
+               except isCloseKeyPressed := false; end;
               end;
 
               constructor Application.initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
