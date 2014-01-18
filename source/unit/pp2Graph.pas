@@ -9,6 +9,7 @@ interface
              BoardPointer = ^Board;
              PlayerPointer = ^Player;
              EnemyPointer = ^Enemy;
+             EnemyListPointer = ^EnemyList;
 
              Board = object
              private
@@ -17,6 +18,7 @@ interface
 
                    Player : PlayerPointer;
                    Enemy : EnemyPointer;
+                   EnemyList : EnemyListPointer;
 
                    points, pointsToWin : integer;
                    win : boolean;
@@ -47,6 +49,9 @@ interface
 
                    function setEnemy(newEnemy : EnemyPointer; selfPointer : BoardPointer) : boolean;
                    function getEnemy() : EnemyPointer;
+
+                   function setEnemyList(newEnemyList : EnemyListPointer; selfPointer : BoardPointer) : boolean;
+                   function getEnemyList() : EnemyListPointer;
 
                    function setPoints(newPoints : integer) : boolean;
                    function getPoints() : integer;
@@ -132,6 +137,25 @@ interface
 
                    function getBoard() : BoardPointer;
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
+             end;
+
+             EnemyList = object
+                 private
+                  head, tail: EnemyPointer;
+                  initialCount, count: integer;
+
+                  Board : BoardPointer;
+
+                  function setInitialCount(newInitialCount : integer) : boolean;
+                  function getInitialCount() : integer;
+
+                  function setBoard(newBoard : BoardPointer) : boolean;
+                 public
+                  function getBoard() : BoardPointer;
+
+                  function randomizeEnemies() : boolean;
+
+                  constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
 implementation
@@ -247,6 +271,19 @@ implementation
                try
                  getEnemy := Enemy;
                except getEnemy := nil; end;
+              end;
+
+              function Board.setEnemyList(newEnemyList : EnemyListPointer; selfPointer : BoardPointer) : boolean;  begin
+               try
+                newEnemyList^.setBoard(selfPointer);
+                EnemyList := newEnemyList;
+                setEnemyList := true;
+               except setEnemyList := false; end;
+              end;
+              function Board.getEnemyList() : EnemyListPointer; begin
+               try
+                 getEnemyList := EnemyList;
+               except getEnemyList := nil; end;
               end;
 
               function Board.setPoints(newPoints : integer) : boolean; begin
@@ -691,6 +728,46 @@ implementation
                 Enemy.setMoveCounter(0);
                 Enemy.setAlive(true);
                 Enemy.setValue(ApplicationConfiguration^.getPointsForEnemy());
+              end;
+
+              function EnemyList.setInitialCount(newInitialCount : integer) : boolean; begin
+              try
+                 initialCount := newInitialCount;
+                 setInitialCount := true;
+              except setInitialCount := false; end;
+              end;
+              function EnemyList.getInitialCount() : integer; begin
+               try
+                 getInitialCount := initialCount;
+               except getInitialCount := 0; end;
+              end;
+
+              function EnemyList.setBoard(newBoard : BoardPointer) : boolean;  begin
+               try
+                Board := newBoard;
+                setBoard := true;
+               except setBoard := false; end;
+              end;
+              function EnemyList.getBoard() : BoardPointer; begin
+               try
+                 getBoard := Board;
+               except getBoard := nil; end;
+              end;
+
+              function EnemyList.randomizeEnemies() : boolean;
+              var i : integer;
+              begin
+                try
+                  for i := 0 to EnemyList.getInitialCount() do begin
+                    {Add enemies to list}
+                  end;
+
+                  randomizeEnemies := true;
+                except randomizeEnemies := false; end;
+              end;
+
+              constructor EnemyList.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
+               EnemyList.setInitialCount(ApplicationConfiguration^.getInitialEnemyCount());
               end;
 end.
 

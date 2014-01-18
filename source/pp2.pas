@@ -3,7 +3,7 @@ program pp2;
 {$mode objfpc}{$H+}
 {$UNITPATH ./units}
 
-uses pp2Memory, pp2Graph, pp2Application;
+uses pp2Application, pp2Graph;
 
 var
 Application : ApplicationPointer;
@@ -12,6 +12,7 @@ ApplicationConfiguration : ApplicationConfigurationPointer;
 Board : BoardPointer;
 Player : PlayerPointer;
 
+EnemyList : EnemyListPointer;
 Enemy : EnemyPointer;
 
 begin
@@ -24,6 +25,10 @@ begin
 
      Player^.randomizePosition();
      Player^.draw();
+
+     EnemyList := new (EnemyListPointer, initialize(ApplicationConfiguration));
+     Board^.setEnemyList(EnemyList, Board);
+     EnemyList^.randomizeEnemies();
 
      Enemy := new (EnemyPointer, initialize(ApplicationConfiguration));
      Board^.setEnemy(Enemy, Board);
@@ -45,6 +50,10 @@ begin
 
            Enemy^.move();
            Player^.checkForCollision(Enemy);
+
+           {EnemyList^.hatch();}
+           {EnemyList^.move();}
+           {Player^.checkForCollisions(EnemyList);}
 
      until ((Application^.isCloseKeyPressed()) or (Board^.getWin()));
 

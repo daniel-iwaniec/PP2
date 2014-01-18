@@ -20,6 +20,7 @@ interface
                    defaultEnemyMoveInterval : integer;
 
                    pointsForEnemy, pointsToWin : integer;
+                   initialEnemyCount : integer;
 
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
@@ -36,6 +37,7 @@ interface
 
                    function setPointsForEnemy(newPointsForEnemy: integer) : boolean;
                    function setPointsToWin(newPointsToWin: integer) : boolean;
+                   function setInitialEnemyCount(newInitialEnemyCount: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
@@ -52,6 +54,8 @@ interface
 
                    function getPointsForEnemy() : integer;
                    function getPointsToWin() : integer;
+
+                   function getInitialEnemyCount() : integer;
 
                    constructor initialize();
              end;
@@ -321,19 +325,33 @@ implementation
                except getPointsToWin := 0; end;
               end;
 
+              function ApplicationConfiguration.setInitialEnemyCount(newInitialEnemyCount : integer) : boolean; begin
+              try
+                 initialEnemyCount := newInitialEnemyCount;
+                 setInitialEnemyCount := true;
+              except setInitialEnemyCount := false; end;
+              end;
+              function ApplicationConfiguration.getInitialEnemyCount() : integer; begin
+               try
+                 getInitialEnemyCount := initialEnemyCount;
+               except getInitialEnemyCount := 0; end;
+              end;
+
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
                 ApplicationConfiguration.setBoardBorderWidth(4);
 
                 ApplicationConfiguration.setDefaultPlayerSize(10);
-                ApplicationConfiguration.setDefaultPlayerSpeed(10);
+                ApplicationConfiguration.setDefaultPlayerSpeed(8);
 
                 ApplicationConfiguration.setDefaultEnemySize(5);
-                ApplicationConfiguration.setDefaultEnemySpeed(1);
+                ApplicationConfiguration.setDefaultEnemySpeed(2);
                 ApplicationConfiguration.setDefaultEnemyMoveInterval(1000);
 
                 ApplicationConfiguration.setPointsForEnemy(10);
                 ApplicationConfiguration.setPointsToWin(10);
+
+                ApplicationConfiguration.setInitialEnemyCount(6);
               end;
 end.
 
