@@ -46,7 +46,9 @@ begin
            Enemy^.move();
            Player^.checkForCollision(Enemy);
 
-     until (Application^.isCloseKeyPressed());
+     until ((Application^.isCloseKeyPressed()) or (Board^.getWin()));
+
+     repeat Application^.isKeyPressed(); until (Application^.isCloseKeyPressed());
 
      Application^.close();
 end.

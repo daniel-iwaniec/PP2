@@ -18,6 +18,9 @@ interface
                    Player : PlayerPointer;
                    Enemy : EnemyPointer;
 
+                   points, pointsToWin : integer;
+                   win : boolean;
+
                    function setMinX(newMinX : integer) : boolean;
                    function setMaxX(newMaxX : integer) : boolean;
                    function setMinY(newMinY : integer) : boolean;
@@ -25,6 +28,9 @@ interface
 
                    function setPadding(newPadding : integer) : boolean;
                    function setBorderWidth(newBorderWidth : integer) : boolean;
+
+                   function setPointsToWin(newPointsToWin : integer) : boolean;
+                   function setWin(newWin : boolean) : boolean;
 
                    function draw() : boolean;
              public
@@ -41,6 +47,14 @@ interface
 
                    function setEnemy(newEnemy : EnemyPointer; selfPointer : BoardPointer) : boolean;
                    function getEnemy() : EnemyPointer;
+
+                   function setPoints(newPoints : integer) : boolean;
+                   function getPoints() : integer;
+                   function getPointsToWin() : integer;
+                   function printPoints() : boolean;
+
+                   function getWin() : boolean;
+                   function checkForWin() : boolean;
 
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
@@ -93,6 +107,7 @@ interface
                    moveInterval, moveCounter : integer;
 
                    alive : boolean;
+                   value : integer;
 
                    function setBoard(newBoard : BoardPointer) : boolean;
                    function setMoveInterval(newMoveInterval : integer) : boolean;
@@ -102,6 +117,9 @@ interface
 
                    function setAlive(newAlive : boolean) : boolean;
                    function getAlive() : boolean;
+
+                   function setValue(newValue : integer) : boolean;
+                   function getValue() : integer;
              public
                    function draw() : boolean;
                    function randomizePosition() : boolean;
@@ -231,6 +249,77 @@ implementation
                except getEnemy := nil; end;
               end;
 
+              function Board.setPoints(newPoints : integer) : boolean; begin
+              try
+                 points := newPoints;
+                 setPoints := true;
+              except setPoints := false; end;
+              end;
+              function Board.getPoints() : integer; begin
+               try
+                  getPoints := points;
+               except getPoints := 0; end;
+              end;
+              function Board.setPointsToWin(newPointsToWin : integer) : boolean; begin
+              try
+                 pointsToWin := newPointsToWin;
+                 setPointsToWin := true;
+              except setPointsToWin := false; end;
+              end;
+              function Board.getPointsToWin() : integer; begin
+               try
+                  getPointsToWin := pointsToWin;
+               except getPointsToWin := 0; end;
+              end;
+              function Board.printPoints() : boolean;
+              var pointsString : string; localX, localY : integer; localTextHeight, localTextWidth : word;
+              begin
+               try
+                  SetTextStyle(3, 0, 0);
+                  str(Board.getPoints(), pointsString);
+                  pointsString := 'Points: ' + pointsString;
+                  localTextHeight := TextHeight(pointsString);
+                  localTextWidth := TextWidth(pointsString);
+
+                  for localX := Board.getPadding() to (Board.getPadding() + localTextWidth - 2) do begin
+                   for localY := (Board.getPadding() - Board.getBorderWidth() - localTextHeight - 2) to (Board.getPadding() - Board.getBorderWidth() - localTextHeight - 4 + localTextHeight) do begin
+                    PutPixel(localX, localY, black);
+                   end;
+                  end;
+
+                  OutTextXY(Board.getPadding(), (Board.getPadding() - Board.getBorderWidth() - localTextHeight - 2), pointsString);
+                  printPoints := true;
+               except printPoints := false; end;
+              end;
+
+              function Board.setWin(newWin : boolean) : boolean; begin
+              try
+                 win := newWin;
+                 setWin := true;
+              except setWin := false; end;
+              end;
+              function Board.getWin() : boolean; begin
+               try
+                  getWin := win;
+               except getWin := false; end;
+              end;
+
+              function Board.checkForWin() : boolean; begin
+               try
+                  if (Board.getPoints() >= Board.getPointsToWin()) then begin
+                   Board.setWin(true);
+
+                   SetTextStyle(3, 0, 0);
+                   OutTextXY(300, 300, 'Winner');
+
+                   checkForWin := true;
+                  end else begin
+                   Board.setWin(false);
+                   checkForWin := false;
+                  end;
+               except checkForWin := false; end;
+              end;
+
               constructor Board.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                  Board.setPadding(ApplicationConfiguration^.getBoardPadding());
                  Board.setBorderWidth(ApplicationConfiguration^.getBoardBorderWidth());
@@ -241,6 +330,10 @@ implementation
                  Board.setMaxY(ApplicationConfiguration^.getGraphMaxY() - Board.getPadding());
 
                  Board.draw();
+
+                 Board.setPoints(0);
+                 Board.setPointsToWin(ApplicationConfiguration^.getPointsToWin());
+                 Board.printPoints();
               end;
 
               function Entity.setX(newX : integer) : boolean; begin
@@ -401,8 +494,16 @@ implementation
                  if ((Player.getX() <= (Enemy^.getX() + Enemy^.getSize() - 1))
                      and ((Player.getX() + Player.getSize() - 1) >= Enemy^.getX())
                      and (Player.getY() <= (Enemy^.getY() + Enemy^.getSize() - 1))
-                     and ((Player.getY() + Player.getSize() - 1) >= Enemy^.getY())) then begin
+                     and ((Player.getY() + Player.getSize() - 1) >= Enemy^.getY())
+                     and (Enemy^.getAlive())) then begin
+                  Player.getBoard()^.setPoints(Player.getBoard()^.getPoints + Enemy^.getValue());
+                  Player.getBoard()^.printPoints();
+
+                  Enemy^.clear();
+                  Player.draw();
+
                   Enemy^.setAlive(false);
+                  Player.getBoard()^.checkForWin();
                   checkForCollision := true;
                  end else begin
                   checkForCollision := false;
@@ -571,12 +672,25 @@ implementation
                except getAlive := true; end;
               end;
 
+              function Enemy.setValue(newValue : integer) : boolean; begin
+              try
+                 value := newValue;
+                 setValue := true;
+              except setValue := false; end;
+              end;
+              function Enemy.getValue() : integer; begin
+               try
+                  getValue := value;
+               except getValue := 0; end;
+              end;
+
               constructor Enemy.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Enemy.setSize(ApplicationConfiguration^.getDefaultEnemySize());
                 Enemy.setSpeed(ApplicationConfiguration^.getDefaultEnemySpeed());
                 Enemy.setMoveInterval(ApplicationConfiguration^.getDefaultEnemyMoveInterval());
                 Enemy.setMoveCounter(0);
                 Enemy.setAlive(true);
+                Enemy.setValue(ApplicationConfiguration^.getPointsForEnemy());
               end;
 end.
 

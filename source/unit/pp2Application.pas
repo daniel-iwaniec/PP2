@@ -19,6 +19,8 @@ interface
                    defaultEnemySize, defaultEnemySpeed: integer;
                    defaultEnemyMoveInterval : integer;
 
+                   pointsForEnemy, pointsToWin : integer;
+
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
 
@@ -31,6 +33,9 @@ interface
                    function setDefaultEnemySize(newDefaultEnemySize: integer) : boolean;
                    function setDefaultEnemySpeed(newDefaultEnemySpeed: integer) : boolean;
                    function setDefaultEnemyMoveInterval(newDefaultEnemyMoveInterval: integer) : boolean;
+
+                   function setPointsForEnemy(newPointsForEnemy: integer) : boolean;
+                   function setPointsToWin(newPointsToWin: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
@@ -44,6 +49,9 @@ interface
                    function getDefaultEnemySize() : integer;
                    function getDefaultEnemySpeed() : integer;
                    function getDefaultEnemyMoveInterval() : integer;
+
+                   function getPointsForEnemy() : integer;
+                   function getPointsToWin() : integer;
 
                    constructor initialize();
              end;
@@ -290,6 +298,29 @@ implementation
                except getDefaultEnemyMoveInterval := 0; end;
               end;
 
+              function ApplicationConfiguration.setPointsForEnemy(newPointsForEnemy : integer) : boolean; begin
+              try
+                 pointsForEnemy := newPointsForEnemy;
+                 setPointsForEnemy := true;
+              except setPointsForEnemy := false; end;
+              end;
+              function ApplicationConfiguration.getPointsForEnemy() : integer; begin
+               try
+                  getPointsForEnemy := pointsForEnemy;
+               except getPointsForEnemy := 0; end;
+              end;
+              function ApplicationConfiguration.setPointsToWin(newPointsToWin : integer) : boolean; begin
+              try
+                 pointsToWin := newPointsToWin;
+                 setPointsToWin := true;
+              except setPointsToWin := false; end;
+              end;
+              function ApplicationConfiguration.getPointsToWin() : integer; begin
+               try
+                  getPointsToWin := pointsToWin;
+               except getPointsToWin := 0; end;
+              end;
+
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
                 ApplicationConfiguration.setBoardBorderWidth(4);
@@ -300,6 +331,9 @@ implementation
                 ApplicationConfiguration.setDefaultEnemySize(5);
                 ApplicationConfiguration.setDefaultEnemySpeed(1);
                 ApplicationConfiguration.setDefaultEnemyMoveInterval(1000);
+
+                ApplicationConfiguration.setPointsForEnemy(10);
+                ApplicationConfiguration.setPointsToWin(10);
               end;
 end.
 
