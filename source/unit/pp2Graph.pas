@@ -81,6 +81,8 @@ interface
 
                    function getBoard() : BoardPointer;
 
+                   function checkForCollision(Enemy : EnemyPointer) : boolean;
+
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
@@ -88,19 +90,29 @@ interface
              private
                    Board : BoardPointer;
 
+                   moveInterval, moveCounter : integer;
+
+                   alive : boolean;
+
                    function setBoard(newBoard : BoardPointer) : boolean;
+                   function setMoveInterval(newMoveInterval : integer) : boolean;
+                   function getMoveInterval() : integer;
+                   function setMoveCounter(newMoveCounter : integer) : boolean;
+                   function getMoveCounter() : integer;
+
+                   function setAlive(newAlive : boolean) : boolean;
+                   function getAlive() : boolean;
              public
                    function draw() : boolean;
+                   function randomizePosition() : boolean;
 
                    function moveUp() : boolean;
                    function moveDown() : boolean;
                    function moveRight() : boolean;
                    function moveLeft() : boolean;
-
-                   function randomizePosition() : boolean;
+                   function move() : boolean;
 
                    function getBoard() : BoardPointer;
-
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
 
@@ -384,6 +396,20 @@ implementation
                except getBoard := nil; end;
               end;
 
+              function Player.checkForCollision(Enemy : EnemyPointer) : boolean; begin
+               try
+                 if ((Player.getX() <= (Enemy^.getX() + Enemy^.getSize() - 1))
+                     and ((Player.getX() + Player.getSize() - 1) >= Enemy^.getX())
+                     and (Player.getY() <= (Enemy^.getY() + Enemy^.getSize() - 1))
+                     and ((Player.getY() + Player.getSize() - 1) >= Enemy^.getY())) then begin
+                  Enemy^.setAlive(false);
+                  checkForCollision := true;
+                 end else begin
+                  checkForCollision := false;
+                 end;
+               except checkForCollision := false; end;
+              end;
+
               constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Player.setSize(ApplicationConfiguration^.getDefaultPlayerSize());
                 Player.setSpeed(ApplicationConfiguration^.getDefaultPlayerSpeed());
@@ -392,8 +418,8 @@ implementation
               function Enemy.draw() : boolean; begin
                try
                 setFillStyle(solidFill, Red);
-                bar(Enemy.getX(), Enemy.getY(), Enemy.getX() + Enemy.getSize() - 1, Enemy.getY() + Enemy.getSize() - 1);
-                draw := true;
+                 bar(Enemy.getX(), Enemy.getY(), Enemy.getX() + Enemy.getSize() - 1, Enemy.getY() + Enemy.getSize() - 1);
+                 draw := true;
                except draw := false; end;
               end;
 
@@ -457,6 +483,38 @@ implementation
                except moveLeft := false; end;
               end;
 
+              function Enemy.move() : boolean;
+              var direction, localMoveInterval, localMoveCounter : integer;
+              begin
+               try
+                if (Enemy.getAlive()) then begin
+                 localMoveInterval := Enemy.getMoveInterval();
+                 localMoveCounter := Enemy.getMoveCounter();
+
+                 if (localMoveCounter >= localMoveInterval) then begin
+                  Enemy.setMoveCounter(0);
+                  direction := random(4) + 1;
+
+                  if (direction = 1) then begin
+                   Enemy.moveUp();
+                  end else if (direction = 2) then begin
+                   Enemy.moveDown();
+                  end else if (direction = 3) then begin
+                   Enemy.moveRight();
+                  end else if (direction = 4) then begin
+                   Enemy.moveLeft();
+                  end;
+                 end else begin
+                  localMoveCounter := localMoveCounter + 1;
+                  Enemy.setMoveCounter(localMoveCounter);
+                 end;
+                 move := true;
+                end else begin
+                 move := false;
+                end;
+               except move := false; end;
+              end;
+
               function Enemy.randomizePosition() : boolean; begin
                try
                 Enemy.setX(random(Enemy.getBoard()^.getMaxX() - Enemy.getBoard()^.getMinX() - Enemy.getSize()) + Enemy.getBoard()^.getMinX());
@@ -477,9 +535,48 @@ implementation
                except getBoard := nil; end;
               end;
 
+              function Enemy.setMoveInterval(newMoveInterval : integer) : boolean;  begin
+               try
+                moveInterval := newMoveInterval;
+                setMoveInterval := true;
+               except setMoveInterval := false; end;
+              end;
+              function Enemy.getMoveInterval() : integer; begin
+               try
+                 getMoveInterval := moveInterval;
+               except getMoveInterval := 0; end;
+              end;
+
+              function Enemy.setMoveCounter(newMoveCounter : integer) : boolean;  begin
+               try
+                moveCounter := newMoveCounter;
+                setMoveCounter := true;
+               except setMoveCounter := false; end;
+              end;
+              function Enemy.getMoveCounter() : integer; begin
+               try
+                 getMoveCounter := moveCounter;
+               except getMoveCounter := 0; end;
+              end;
+
+              function Enemy.setAlive(newAlive : boolean) : boolean;  begin
+               try
+                alive := newAlive;
+                setAlive := true;
+               except setAlive := false; end;
+              end;
+              function Enemy.getAlive() : boolean; begin
+               try
+                 getAlive := alive;
+               except getAlive := true; end;
+              end;
+
               constructor Enemy.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Enemy.setSize(ApplicationConfiguration^.getDefaultEnemySize());
                 Enemy.setSpeed(ApplicationConfiguration^.getDefaultEnemySpeed());
+                Enemy.setMoveInterval(ApplicationConfiguration^.getDefaultEnemyMoveInterval());
+                Enemy.setMoveCounter(0);
+                Enemy.setAlive(true);
               end;
 end.
 

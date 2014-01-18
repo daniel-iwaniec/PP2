@@ -17,6 +17,7 @@ interface
                    defaultPlayerSize, defaultPlayerSpeed : integer;
 
                    defaultEnemySize, defaultEnemySpeed: integer;
+                   defaultEnemyMoveInterval : integer;
 
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
@@ -29,6 +30,7 @@ interface
 
                    function setDefaultEnemySize(newDefaultEnemySize: integer) : boolean;
                    function setDefaultEnemySpeed(newDefaultEnemySpeed: integer) : boolean;
+                   function setDefaultEnemyMoveInterval(newDefaultEnemyMoveInterval: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
@@ -41,6 +43,7 @@ interface
 
                    function getDefaultEnemySize() : integer;
                    function getDefaultEnemySpeed() : integer;
+                   function getDefaultEnemyMoveInterval() : integer;
 
                    constructor initialize();
              end;
@@ -275,6 +278,17 @@ implementation
                   getDefaultEnemySpeed := defaultEnemySpeed;
                except getDefaultEnemySpeed := 0; end;
               end;
+              function ApplicationConfiguration.setDefaultEnemyMoveInterval(newDefaultEnemyMoveInterval : integer) : boolean; begin
+              try
+                 defaultEnemyMoveInterval := newDefaultEnemyMoveInterval;
+                 setDefaultEnemyMoveInterval := true;
+              except setDefaultEnemyMoveInterval := false; end;
+              end;
+              function ApplicationConfiguration.getDefaultEnemyMoveInterval() : integer; begin
+               try
+                  getDefaultEnemyMoveInterval := defaultEnemyMoveInterval;
+               except getDefaultEnemyMoveInterval := 0; end;
+              end;
 
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
@@ -284,7 +298,8 @@ implementation
                 ApplicationConfiguration.setDefaultPlayerSpeed(10);
 
                 ApplicationConfiguration.setDefaultEnemySize(5);
-                ApplicationConfiguration.setDefaultEnemySpeed(5);
+                ApplicationConfiguration.setDefaultEnemySpeed(1);
+                ApplicationConfiguration.setDefaultEnemyMoveInterval(1000);
               end;
 end.
 
