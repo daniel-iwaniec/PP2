@@ -22,6 +22,8 @@ interface
                    pointsForEnemy, pointsToWin : integer;
                    initialEnemyCount : integer;
 
+                   enemyHatchInterval, enemyPopulationLimit : integer;
+
                    function setBoardPadding(newBoardPadding : integer) : boolean;
                    function setBoardBorderWidth(newBoardBorderWidth : integer) : boolean;
 
@@ -38,6 +40,9 @@ interface
                    function setPointsForEnemy(newPointsForEnemy: integer) : boolean;
                    function setPointsToWin(newPointsToWin: integer) : boolean;
                    function setInitialEnemyCount(newInitialEnemyCount: integer) : boolean;
+
+                   function setEnemyHatchInterval(newEnemyHatchInterval: integer) : boolean;
+                   function setEnemyPopulationLimit(newEnemyPopulationLimit: integer) : boolean;
              public
                    function getBoardPadding() : integer;
                    function getBoardBorderWidth() : integer;
@@ -56,6 +61,9 @@ interface
                    function getPointsToWin() : integer;
 
                    function getInitialEnemyCount() : integer;
+
+                   function getEnemyHatchInterval() : integer;
+                   function getEnemyPopulationLimit() : integer;
 
                    constructor initialize();
              end;
@@ -337,6 +345,29 @@ implementation
                except getInitialEnemyCount := 0; end;
               end;
 
+              function ApplicationConfiguration.setEnemyHatchInterval(newEnemyHatchInterval : integer) : boolean; begin
+              try
+                 enemyHatchInterval := newEnemyHatchInterval;
+                 setEnemyHatchInterval := true;
+              except setEnemyHatchInterval := false; end;
+              end;
+              function ApplicationConfiguration.getEnemyHatchInterval() : integer; begin
+               try
+                 getEnemyHatchInterval := enemyHatchInterval;
+               except getEnemyHatchInterval := 0; end;
+              end;
+              function ApplicationConfiguration.setEnemyPopulationLimit(newEnemyPopulationLimit : integer) : boolean; begin
+              try
+                 enemyPopulationLimit := newEnemyPopulationLimit;
+                 setEnemyPopulationLimit := true;
+              except setEnemyPopulationLimit := false; end;
+              end;
+              function ApplicationConfiguration.getEnemyPopulationLimit() : integer; begin
+               try
+                 getEnemyPopulationLimit := enemyPopulationLimit;
+               except getEnemyPopulationLimit := 0; end;
+              end;
+
               constructor ApplicationConfiguration.initialize(); begin
                 ApplicationConfiguration.setBoardPadding(50);
                 ApplicationConfiguration.setBoardBorderWidth(4);
@@ -349,9 +380,12 @@ implementation
                 ApplicationConfiguration.setDefaultEnemyMoveInterval(1000);
 
                 ApplicationConfiguration.setPointsForEnemy(10);
-                ApplicationConfiguration.setPointsToWin(10);
+                ApplicationConfiguration.setPointsToWin(100);
 
-                ApplicationConfiguration.setInitialEnemyCount(6);
+                ApplicationConfiguration.setInitialEnemyCount(3);
+
+                ApplicationConfiguration.setEnemyHatchInterval(50000);
+                ApplicationConfiguration.setEnemyPopulationLimit(25);
               end;
 end.
 

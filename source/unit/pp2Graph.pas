@@ -101,6 +101,7 @@ interface
                    function getBoard() : BoardPointer;
 
                    function checkForCollision(Enemy : EnemyPointer) : boolean;
+                   function checkForCollisions(EnemyList : EnemyListPointer) : boolean;
 
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
@@ -113,6 +114,9 @@ interface
 
                    alive : boolean;
                    value : integer;
+
+                   id : integer;
+                   next, previous : EnemyPointer;
 
                    function setBoard(newBoard : BoardPointer) : boolean;
                    function setMoveInterval(newMoveInterval : integer) : boolean;
@@ -135,8 +139,16 @@ interface
                    function moveLeft() : boolean;
                    function move() : boolean;
 
+                   function setId(newId : integer) : boolean;
+                   function getId() : integer;
+                   function setNext(newNext : EnemyPointer) : boolean;
+                   function getNext() : EnemyPointer;
+                   function setPrevious(newPrevious : EnemyPointer) : boolean;
+                   function getPrevious() : EnemyPointer;
+
                    function getBoard() : BoardPointer;
                    constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
+                   destructor kill();
              end;
 
              EnemyList = object
@@ -146,6 +158,8 @@ interface
 
                   Board : BoardPointer;
 
+                  enemyHatchInterval, enemyHatchCounter, enemyPopulationLimit : integer;
+
                   function setInitialCount(newInitialCount : integer) : boolean;
                   function getInitialCount() : integer;
 
@@ -153,7 +167,28 @@ interface
                  public
                   function getBoard() : BoardPointer;
 
-                  function randomizeEnemies() : boolean;
+                  function setHead(newHead : EnemyPointer) : boolean;
+                  function getHead() : EnemyPointer;
+                  function setTail(newTail : EnemyPointer) : boolean;
+                  function getTail() : EnemyPointer;
+                  function setCount(newCount : integer) : boolean;
+                  function getCount() : integer;
+
+                  function add() : integer;
+                  function remove(enemyId : integer) : boolean;
+                  function getEnemy(enemyId : integer) : EnemyPointer;
+                  function initializeEnemies() : boolean;
+
+                  function move() : boolean;
+
+                  function setEnemyHatchInterval(newEnemyHatchInterval: integer) : boolean;
+                  function getEnemyHatchInterval() : integer;
+                  function setEnemyHatchCounter(newEnemyHatchCounter: integer) : boolean;
+                  function getEnemyHatchCounter() : integer;
+                  function setEnemyPopulationLimit(newEnemyPopulationLimit: integer) : boolean;
+                  function getEnemyPopulationLimit() : integer;
+
+                  function hatch() : boolean;
 
                   constructor initialize(ApplicationConfiguration : ApplicationConfigurationPointer);
              end;
@@ -548,6 +583,18 @@ implementation
                except checkForCollision := false; end;
               end;
 
+              function Player.checkForCollisions(EnemyList : EnemyListPointer) : boolean;
+              var i : integer; Enemy : EnemyPointer;
+              begin
+               try
+                for i := 1 to EnemyList^.getCount() do begin
+                 Enemy := EnemyList^.getEnemy(i);
+                 Player.checkForCollision(Enemy);
+                end;
+                checkForCollisions := true;
+               except checkForCollisions := false; end;
+              end;
+
               constructor Player.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Player.setSize(ApplicationConfiguration^.getDefaultPlayerSize());
                 Player.setSpeed(ApplicationConfiguration^.getDefaultPlayerSpeed());
@@ -653,10 +700,40 @@ implementation
                except move := false; end;
               end;
 
-              function Enemy.randomizePosition() : boolean; begin
+              function Enemy.randomizePosition() : boolean;
+              var isColliding : boolean; i : integer; EnemyLocal : EnemyPointer;
+              begin
                try
-                Enemy.setX(random(Enemy.getBoard()^.getMaxX() - Enemy.getBoard()^.getMinX() - Enemy.getSize()) + Enemy.getBoard()^.getMinX());
-                Enemy.setY(random(Enemy.getBoard()^.getMaxY() - Enemy.getBoard()^.getMinY() - Enemy.getSize()) + Enemy.getBoard()^.getMinY());
+                isColliding := false;
+
+                repeat
+                 Enemy.setX(random(Enemy.getBoard()^.getMaxX() - Enemy.getBoard()^.getMinX() - Enemy.getSize()) + Enemy.getBoard()^.getMinX());
+                 Enemy.setY(random(Enemy.getBoard()^.getMaxY() - Enemy.getBoard()^.getMinY() - Enemy.getSize()) + Enemy.getBoard()^.getMinY());
+
+                  for i := 1 to Enemy.getBoard()^.getEnemyList()^.getCount() do begin
+                   if (Enemy.getId() <> i) then begin
+                    EnemyLocal := Enemy.getBoard()^.getEnemyList()^.getEnemy(i);
+
+                    if ((Enemy.getX() <= (EnemyLocal^.getX() + EnemyLocal^.getSize() - 1))
+                     and ((Enemy.getX() + Enemy.getSize() - 1) >= EnemyLocal^.getX())
+                     and (Enemy.getY() <= (EnemyLocal^.getY() + EnemyLocal^.getSize() - 1))
+                     and ((Enemy.getY() + Enemy.getSize() - 1) >= EnemyLocal^.getY())) then begin
+                      isColliding := true;
+                      break;
+                    end;
+                   end;
+                  end;
+
+                  if (isColliding = false) then begin
+                   if ((Enemy.getBoard()^.getPlayer()^.getX() <= (Enemy.getX() + Enemy.getSize() - 1))
+                      and ((Enemy.getBoard()^.getPlayer()^.getX() + Enemy.getBoard()^.getPlayer()^.getSize() - 1) >= Enemy.getX())
+                      and (Enemy.getBoard()^.getPlayer()^.getY() <= (Enemy.getY() + Enemy.getSize() - 1))
+                      and ((Enemy.getBoard()^.getPlayer()^.getY() + Enemy.getBoard()^.getPlayer()^.getSize() - 1) >= Enemy.getY())) then begin
+                       isColliding := true;
+                   end;
+                  end;
+                until not(isColliding);
+
                 randomizePosition := true;
                except randomizePosition := false; end;
               end;
@@ -721,13 +798,58 @@ implementation
                except getValue := 0; end;
               end;
 
+              function Enemy.setId(newId : integer) : boolean; begin
+              try
+                 id := newId;
+                 setId := true;
+              except setId := false; end;
+              end;
+              function Enemy.getId() : integer; begin
+               try
+                  getId := id;
+               except getId := 0; end;
+              end;
+              function Enemy.setNext(newNext : EnemyPointer) : boolean; begin
+              try
+                 next := newNext;
+                 setNext := true;
+              except setNext := false; end;
+              end;
+              function Enemy.getNext() : EnemyPointer; begin
+               try
+                  getNext := next;
+               except getNext := nil; end;
+              end;
+              function Enemy.setPrevious(newPrevious : EnemyPointer) : boolean; begin
+              try
+                 previous := newPrevious;
+                 setPrevious := true;
+              except setPrevious := false; end;
+              end;
+              function Enemy.getPrevious() : EnemyPointer; begin
+               try
+                  getPrevious := previous;
+               except getPrevious := nil; end;
+              end;
+
               constructor Enemy.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                 Enemy.setSize(ApplicationConfiguration^.getDefaultEnemySize());
                 Enemy.setSpeed(ApplicationConfiguration^.getDefaultEnemySpeed());
                 Enemy.setMoveInterval(ApplicationConfiguration^.getDefaultEnemyMoveInterval());
                 Enemy.setMoveCounter(0);
+
                 Enemy.setAlive(true);
                 Enemy.setValue(ApplicationConfiguration^.getPointsForEnemy());
+
+                Enemy.setId(0);
+                Enemy.setNext(nil);
+                Enemy.setPrevious(nil);
+              end;
+
+              destructor Enemy.kill(); begin
+                Enemy.setId(0);
+                Enemy.setNext(nil);
+                Enemy.setPrevious(nil);
               end;
 
               function EnemyList.setInitialCount(newInitialCount : integer) : boolean; begin
@@ -754,20 +876,204 @@ implementation
                except getBoard := nil; end;
               end;
 
-              function EnemyList.randomizeEnemies() : boolean;
-              var i : integer;
+              function EnemyList.setHead(newHead : EnemyPointer) : boolean;  begin
+               try
+                head := newHead;
+                setHead := true;
+               except setHead := false; end;
+              end;
+              function EnemyList.getHead() : EnemyPointer; begin
+               try
+                 getHead := head;
+               except getHead := nil; end;
+              end;
+              function EnemyList.setTail(newTail : EnemyPointer) : boolean;  begin
+               try
+                tail := newTail;
+                setTail := true;
+               except setTail := false; end;
+              end;
+              function EnemyList.getTail() : EnemyPointer; begin
+               try
+                 getTail := tail;
+               except getTail := nil; end;
+              end;
+              function EnemyList.setCount(newCount : integer) : boolean;  begin
+               try
+                count := newCount;
+                setCount := true;
+               except setCount := false; end;
+              end;
+              function EnemyList.getCount() : integer; begin
+               try
+                 getCount := count;
+               except getCount := 0; end;
+              end;
+
+              function EnemyList.add() : integer;
+              var Enemy : EnemyPointer; ApplicationConfiguration : ApplicationConfigurationPointer;
+              begin
+               try
+                EnemyList.setCount(EnemyList.getCount() + 1);
+
+                ApplicationConfiguration := new (ApplicationConfigurationPointer, initialize);
+                Enemy := new (EnemyPointer, initialize(ApplicationConfiguration));
+                EnemyList.getBoard()^.setEnemy(Enemy, EnemyList.getBoard());
+
+                Enemy^.setNext(nil);
+                Enemy^.setPrevious(EnemyList.getTail());
+
+                if (EnemyList.getTail() <> nil) then begin
+                   EnemyList.getTail()^.setNext(Enemy);
+                   Enemy^.setId(EnemyList.getTail()^.getId() + 1);
+                end else begin
+                   Enemy^.setId(1);
+                end;
+
+                EnemyList.setTail(Enemy);
+
+                if (EnemyList.getHead() = nil) then begin
+                  EnemyList.setHead(Enemy);
+                end;
+
+                add := Enemy^.getId();
+               except add := 0; end;
+              end;
+
+              function EnemyList.remove(enemyId : integer) : boolean;
+              var Enemy : EnemyPointer;
+              begin
+               try
+                  if EnemyList.getCount() > 0  then begin
+                     EnemyList.setCount(EnemyList.getCount() - 1);
+
+                     Enemy := EnemyList.getEnemy(enemyId);
+                     if (Enemy <> nil) then begin
+                        if (Enemy^.getPrevious() <> nil) then begin
+                           Enemy^.getPrevious()^.setNext(Enemy^.getNext());
+                        end;
+
+                        if (Enemy^.getNext() <> nil) then begin
+                           Enemy^.getNext()^.setPrevious(Enemy^.getPrevious());
+                        end;
+                     end;
+
+                     if (Enemy <> nil) then dispose(Enemy, kill);
+                  end;
+                remove := true;
+               except remove := false; end;
+              end;
+
+              function EnemyList.getEnemy(enemyId : integer) : EnemyPointer;
+              var Enemy : EnemyPointer;
+              begin
+               try
+                Enemy := nil;
+                repeat
+                      if (Enemy = nil) then Enemy := EnemyList.getHead() else Enemy := Enemy^.getNext();
+                      if (Enemy = nil) then break;
+                until (Enemy^.getId() = enemyId);
+
+                getEnemy := Enemy;
+               except getEnemy := nil; end;
+              end;
+
+              function EnemyList.initializeEnemies() : boolean;
+              var i : integer; Enemy : EnemyPointer;
               begin
                 try
-                  for i := 0 to EnemyList.getInitialCount() do begin
-                    {Add enemies to list}
+                  for i := 1 to EnemyList.getInitialCount() do begin
+                    EnemyList.add();
+                    Enemy := EnemyList.getEnemy(i);
+                    Enemy^.randomizePosition();
+                    Enemy^.draw();
                   end;
 
-                  randomizeEnemies := true;
-                except randomizeEnemies := false; end;
+                  initializeEnemies := true;
+                except initializeEnemies := false; end;
+              end;
+
+              function EnemyList.move() : boolean;
+              var i : integer; Enemy : EnemyPointer;
+              begin
+               try
+                for i := 1 to EnemyList.getCount() do begin
+                 Enemy := EnemyList.getEnemy(i);
+                 Enemy^.move();
+                end;
+
+                move := true;
+               except move := false; end;
+              end;
+
+              function EnemyList.hatch() : boolean;
+              var localHatchCounter, localHatchInterval, id : integer; Enemy : EnemyPointer;
+              begin
+               try
+                 if (EnemyList.getCount() < EnemyList.getEnemyPopulationLimit()) then begin
+                    localHatchInterval := EnemyList.getEnemyHatchInterval();
+                    localHatchCounter := EnemyList.getEnemyHatchCounter();
+
+                    if (localHatchCounter >= localHatchInterval) then begin
+                       EnemyList.setEnemyHatchCounter(0);
+
+                       id := EnemyList.add();
+                       Enemy := EnemyList.getEnemy(id);
+                       Enemy^.randomizePosition();
+                       Enemy^.draw();
+                    end else begin
+                       localHatchCounter := localHatchCounter + 1;
+                       EnemyList.setEnemyHatchCounter(localHatchCounter);
+                    end;
+                 end;
+                hatch := true;
+               except hatch := false; end;
+              end;
+
+              function EnemyList.setEnemyHatchInterval(newEnemyHatchInterval : integer) : boolean; begin
+              try
+                 enemyHatchInterval := newEnemyHatchInterval;
+                 setEnemyHatchInterval := true;
+              except setEnemyHatchInterval := false; end;
+              end;
+              function EnemyList.getEnemyHatchInterval() : integer; begin
+               try
+                 getEnemyHatchInterval := enemyHatchInterval;
+               except getEnemyHatchInterval := 0; end;
+              end;
+              function EnemyList.setEnemyHatchCounter(newEnemyHatchCounter : integer) : boolean; begin
+              try
+                 enemyHatchCounter := newEnemyHatchCounter;
+                 setEnemyHatchCounter := true;
+              except setEnemyHatchCounter := false; end;
+              end;
+              function EnemyList.getEnemyHatchCounter() : integer; begin
+               try
+                 getEnemyHatchCounter := enemyHatchCounter;
+               except getEnemyHatchCounter := 0; end;
+              end;
+              function EnemyList.setEnemyPopulationLimit(newEnemyPopulationLimit : integer) : boolean; begin
+              try
+                 enemyPopulationLimit := newEnemyPopulationLimit;
+                 setEnemyPopulationLimit := true;
+              except setEnemyPopulationLimit := false; end;
+              end;
+              function EnemyList.getEnemyPopulationLimit() : integer; begin
+               try
+                 getEnemyPopulationLimit := enemyPopulationLimit;
+               except getEnemyPopulationLimit := 0; end;
               end;
 
               constructor EnemyList.initialize(ApplicationConfiguration : ApplicationConfigurationPointer); begin
                EnemyList.setInitialCount(ApplicationConfiguration^.getInitialEnemyCount());
+
+               EnemyList.setEnemyHatchInterval(ApplicationConfiguration^.getEnemyHatchInterval());
+               EnemyList.setEnemyHatchCounter(0);
+               EnemyList.setEnemyPopulationLimit(ApplicationConfiguration^.getEnemyPopulationLimit());
+
+               EnemyList.setHead(nil);
+               EnemyList.setTail(nil);
+               EnemyList.setCount(0);
               end;
 end.
 

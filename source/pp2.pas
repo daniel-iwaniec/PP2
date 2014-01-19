@@ -13,7 +13,6 @@ Board : BoardPointer;
 Player : PlayerPointer;
 
 EnemyList : EnemyListPointer;
-Enemy : EnemyPointer;
 
 begin
      ApplicationConfiguration := new (ApplicationConfigurationPointer, initialize);
@@ -28,12 +27,7 @@ begin
 
      EnemyList := new (EnemyListPointer, initialize(ApplicationConfiguration));
      Board^.setEnemyList(EnemyList, Board);
-     EnemyList^.randomizeEnemies();
-
-     Enemy := new (EnemyPointer, initialize(ApplicationConfiguration));
-     Board^.setEnemy(Enemy, Board);
-     Enemy^.randomizePosition();
-     Enemy^.draw();
+     EnemyList^.initializeEnemies();
 
      repeat
            if (Application^.isKeyPressed()) then begin
@@ -48,17 +42,13 @@ begin
               end;
            end;
 
-           Enemy^.move();
-           Player^.checkForCollision(Enemy);
-
-           {EnemyList^.hatch();}
-           {EnemyList^.move();}
-           {Player^.checkForCollisions(EnemyList);}
+           EnemyList^.hatch();
+           EnemyList^.move();
+           Player^.checkForCollisions(EnemyList);
 
      until ((Application^.isCloseKeyPressed()) or (Board^.getWin()));
 
      repeat Application^.isKeyPressed(); until (Application^.isCloseKeyPressed());
-
      Application^.close();
 end.
 
