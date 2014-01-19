@@ -1,4 +1,11 @@
-PP2
-===
+Politechnika Świętokrzyska 
+==========================
+Podstawy Programowania 2 - Projekt
+----------------------------------
 
-Projekt na PP2
+Semestr zimowy 2013/2014.
+
+Autorzy:
+* Daniel Iwaniec
+* Piotr Jarząbek
+* Artur Kałuża   
