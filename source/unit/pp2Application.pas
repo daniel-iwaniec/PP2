@@ -382,10 +382,10 @@ implementation
                 ApplicationConfiguration.setPointsForEnemy(10);
                 ApplicationConfiguration.setPointsToWin(100);
 
-                ApplicationConfiguration.setInitialEnemyCount(3);
+                ApplicationConfiguration.setInitialEnemyCount(5);
 
                 ApplicationConfiguration.setEnemyHatchInterval(50000);
-                ApplicationConfiguration.setEnemyPopulationLimit(25);
+                ApplicationConfiguration.setEnemyPopulationLimit(20);
               end;
 end.
 

@@ -1,5 +1,15 @@
 program pp2;
 
+{------------------------------------
+ Politechnika Świętokrzyska
+ Podstawy Programowania 2 - Projekt
+
+ Autorzy:
+ Daniel Iwaniec
+ Piotr Jarząbek
+ Artur Kałuża
+ ------------------------------------}
+
 {$mode objfpc}{$H+}
 {$UNITPATH ./units}
 

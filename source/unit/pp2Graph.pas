@@ -376,13 +376,18 @@ implementation
                except getWin := false; end;
               end;
 
-              function Board.checkForWin() : boolean; begin
+              function Board.checkForWin() : boolean;
+              var winnerString : string; localTextWidth : word;
+              begin
                try
                   if (Board.getPoints() >= Board.getPointsToWin()) then begin
                    Board.setWin(true);
 
                    SetTextStyle(3, 0, 0);
-                   OutTextXY(300, 300, 'Winner');
+                   winnerString := 'Winner';
+                   localTextWidth := TextWidth(winnerString);
+
+                   OutTextXY((((Board.getMaxX() - Board.getMinX()) div 2) + (localTextWidth div 2)), 300, 'Winner');
 
                    checkForWin := true;
                   end else begin
@@ -584,13 +589,23 @@ implementation
               end;
 
               function Player.checkForCollisions(EnemyList : EnemyListPointer) : boolean;
-              var i : integer; Enemy : EnemyPointer;
+              var i, j : integer; Enemy : EnemyPointer; isColliding : boolean;
               begin
                try
-                for i := 1 to EnemyList^.getCount() do begin
+                i := 0; j := 0;
+                repeat
                  Enemy := EnemyList^.getEnemy(i);
-                 Player.checkForCollision(Enemy);
-                end;
+                 if (Enemy <> nil) then begin
+                  isColliding := Player.checkForCollision(Enemy);
+
+                  if (isColliding) then begin
+                   EnemyList^.remove(i);
+                  end;
+                  j := j +1;
+                 end;
+                 i:= i + 1;
+                until (j = EnemyList^.getCount()) or (i > 1000);
+
                 checkForCollisions := true;
                except checkForCollisions := false; end;
               end;
@@ -701,7 +716,7 @@ implementation
               end;
 
               function Enemy.randomizePosition() : boolean;
-              var isColliding : boolean; i : integer; EnemyLocal : EnemyPointer;
+              var isColliding : boolean; i, j : integer; EnemyLocal : EnemyPointer;
               begin
                try
                 isColliding := false;
@@ -710,28 +725,34 @@ implementation
                  Enemy.setX(random(Enemy.getBoard()^.getMaxX() - Enemy.getBoard()^.getMinX() - Enemy.getSize()) + Enemy.getBoard()^.getMinX());
                  Enemy.setY(random(Enemy.getBoard()^.getMaxY() - Enemy.getBoard()^.getMinY() - Enemy.getSize()) + Enemy.getBoard()^.getMinY());
 
-                  for i := 1 to Enemy.getBoard()^.getEnemyList()^.getCount() do begin
+                 i := 0; j := 0;
+                 repeat
+                  EnemyLocal := Enemy.getBoard()^.getEnemyList()^.getEnemy(i);
+                  if (EnemyLocal <> nil) then begin
                    if (Enemy.getId() <> i) then begin
-                    EnemyLocal := Enemy.getBoard()^.getEnemyList()^.getEnemy(i);
+                     EnemyLocal := Enemy.getBoard()^.getEnemyList()^.getEnemy(i);
 
-                    if ((Enemy.getX() <= (EnemyLocal^.getX() + EnemyLocal^.getSize() - 1))
-                     and ((Enemy.getX() + Enemy.getSize() - 1) >= EnemyLocal^.getX())
-                     and (Enemy.getY() <= (EnemyLocal^.getY() + EnemyLocal^.getSize() - 1))
-                     and ((Enemy.getY() + Enemy.getSize() - 1) >= EnemyLocal^.getY())) then begin
-                      isColliding := true;
-                      break;
+                     if ((Enemy.getX() <= (EnemyLocal^.getX() + EnemyLocal^.getSize() - 1))
+                      and ((Enemy.getX() + Enemy.getSize() - 1) >= EnemyLocal^.getX())
+                      and (Enemy.getY() <= (EnemyLocal^.getY() + EnemyLocal^.getSize() - 1))
+                      and ((Enemy.getY() + Enemy.getSize() - 1) >= EnemyLocal^.getY())) then begin
+                       isColliding := true;
+                       break;
+                     end;
                     end;
-                   end;
+                   j := j +1;
                   end;
+                  i:= i + 1;
+                 until (j = Enemy.getBoard()^.getEnemyList()^.getCount()) or (i > 1000);
 
-                  if (isColliding = false) then begin
+                 if (isColliding = false) then begin
                    if ((Enemy.getBoard()^.getPlayer()^.getX() <= (Enemy.getX() + Enemy.getSize() - 1))
                       and ((Enemy.getBoard()^.getPlayer()^.getX() + Enemy.getBoard()^.getPlayer()^.getSize() - 1) >= Enemy.getX())
                       and (Enemy.getBoard()^.getPlayer()^.getY() <= (Enemy.getY() + Enemy.getSize() - 1))
                       and ((Enemy.getBoard()^.getPlayer()^.getY() + Enemy.getBoard()^.getPlayer()^.getSize() - 1) >= Enemy.getY())) then begin
                        isColliding := true;
                    end;
-                  end;
+                 end;
                 until not(isColliding);
 
                 randomizePosition := true;
@@ -951,10 +972,14 @@ implementation
                      if (Enemy <> nil) then begin
                         if (Enemy^.getPrevious() <> nil) then begin
                            Enemy^.getPrevious()^.setNext(Enemy^.getNext());
+                        end else begin
+                           EnemyList.setHead(Enemy^.getNext());
                         end;
 
                         if (Enemy^.getNext() <> nil) then begin
                            Enemy^.getNext()^.setPrevious(Enemy^.getPrevious());
+                        end else begin
+                           EnemyList.setTail(Enemy^.getPrevious());
                         end;
                      end;
 
@@ -994,13 +1019,18 @@ implementation
               end;
 
               function EnemyList.move() : boolean;
-              var i : integer; Enemy : EnemyPointer;
+              var i, j: integer; Enemy : EnemyPointer;
               begin
                try
-                for i := 1 to EnemyList.getCount() do begin
+                i := 0; j := 0;
+                repeat
                  Enemy := EnemyList.getEnemy(i);
-                 Enemy^.move();
-                end;
+                 if (Enemy <> nil) then begin
+                  Enemy^.move();
+                  j := j + 1;
+                 end;
+                 i:= i + 1;
+                until (j = EnemyList.getCount()) or (i > 1000);
 
                 move := true;
                except move := false; end;
